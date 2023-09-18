@@ -1,13 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
-import BasicTable from './components/BasicTable';
+import SpendTable from './components/SpendTable';
+
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        {BasicTable(5)}
-      </header>
+      {SpendTable(1)}
+
     </div>
   );
 }
