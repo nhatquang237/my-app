@@ -1,40 +1,40 @@
 import React, { useState } from 'react';
 import { Button } from '@mui/material';
+
 import Spend from './Spend.js';
 import MyButton from './CustomButton.js';
-// import Form from './Form';
 import DropDownList from './DropDownList.js';
 
+// Sample data for the table
+var spendData = [
+  { name: 'Water', value: 10, payer: 'Quang', shareholder: ['Quang', 'Tai', 'Phuc', 'Thanh'] },
+  { name: 'Electricity ', value: 100, payer: 'Tai', shareholder: ['Quang', 'Tai', 'Phuc', 'Thanh'] },
+  { name: 'Stuff', value: 20, payer: 'Phuc', shareholder: ['Quang', 'Phuc', 'Thanh'] },
+  { name: 'Book', value: 5, payer: 'Quang'},
+]
+console.log("re-loaded")
+
+// Create an array of Spend objects
+let spends = [];
+let payers = [];
+function initSpend (input_data) {
+  // Collect payer data
+  payers.push(input_data.payer);
+
+  // Collect spend data
+  let spend = new Spend(input_data);
+  spends.push(spend);
+}
+spendData.forEach(initSpend);
+
+// Data for the dropdown options
+const shareholderName = ['Quang', 'Tai', 'Phuc', 'Thanh', 'Tien'];
+
 const SpendTable = () => {
-
-  // Data for the dropdown options
-  const shareholderName = ['Quang', 'Tai', 'Phuc', 'Thanh', 'Tien'];
-
-  // Sample data for the table
-  var spendData = [
-    { name: 'Water', value: 10, payer: 'Quang', shareholder: ['Quang', 'Tai', 'Phuc', 'Thanh'] },
-    { name: 'Electricity ', value: 100, payer: 'Tai', shareholder: ['Quang', 'Tai', 'Phuc', 'Thanh'] },
-    { name: 'Stuff', value: 20, payer: 'Phuc', shareholder: ['Quang', 'Phuc', 'Thanh'] },
-    { name: 'Book', value: 5, payer: 'Quang'},
-  ]
-
-  // Create an array of Spend objects
-  let spends = [];
-  let payers = [];
-  function initSpend (input_data) {
-    // Collect payer data
-    payers.push(input_data.payer);
-
-    // Collect spend data
-    let spend = new Spend(input_data);
-    spends.push(spend);
-  }
-  spendData.forEach(initSpend);
 
   const isShare = (checkName, spendIndex) => {
     return spends[spendIndex].shareholder.includes(checkName)
   }
-
 
   // State to track the current page
   // The parameter inside useState function is the initialState or initial value of number,
@@ -69,14 +69,14 @@ const SpendTable = () => {
     setSelectedOptions(updatedList);
   };
 
-
-
   const handleShareholderClick = (shareIndex, name, index) => {
     // Your custom onClick logic goes here
-    console.log('Button clicked!');
+
+    // Update to Spend object: Remove or add stakeholder to a spend
+    spends[index].updateShareholder(name);
+
     console.log(shareIndex, name, index);
-
-
+    //
   };
 
   return (
@@ -127,7 +127,8 @@ const SpendTable = () => {
               {/* Payer dropdown list */}
               <td>{DropDownList(index, selectedOptions[index], shareholderName, handleOptionChange)}</td>
 
-              <td className='shareholderCell'>
+              {/* Toggle buttons for choosing all stakeholders */}
+              <td>
                 {shareholderName.map((name, shareIndex) => (
                   <MyButton
                     key={'btn_' +shareIndex}
