@@ -24,7 +24,6 @@ function MyButton(props) {
 
   const nestedHandle = () => {
     restProps.onClick()
-    console.log("Nested checking");
     setShare(!share)
   }
 

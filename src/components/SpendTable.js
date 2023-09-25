@@ -5,16 +5,21 @@ import Spend from './Spend.js';
 import MyButton from './CustomButton.js';
 import DropDownList from './DropDownList.js';
 
+// Data for the dropdown options
+// For future development: shareholderName will be get from server Node.js
+const shareholderName = ['Quang', 'Tai', 'Phuc', 'Thanh', 'Tien'];
+
 // Sample data for the table
+// For future development: spendData will be get from server Node.js
 var spendData = [
   { name: 'Water', value: 10, payer: 'Quang', shareholder: ['Quang', 'Tai', 'Phuc', 'Thanh'] },
   { name: 'Electricity ', value: 100, payer: 'Tai', shareholder: ['Quang', 'Tai', 'Phuc', 'Thanh'] },
   { name: 'Stuff', value: 20, payer: 'Phuc', shareholder: ['Quang', 'Phuc', 'Thanh'] },
   { name: 'Book', value: 5, payer: 'Quang'},
 ]
-console.log("re-loaded")
 
-// Create an array of Spend objects
+// Code block to create an array of Spend objects (spends) from spendData and
+// an array of payers (payers)
 let spends = [];
 let payers = [];
 function initSpend (input_data) {
@@ -27,14 +32,21 @@ function initSpend (input_data) {
 }
 spendData.forEach(initSpend);
 
-// Data for the dropdown options
-const shareholderName = ['Quang', 'Tai', 'Phuc', 'Thanh', 'Tien'];
+// Function to check if a name is in shareholder array of a spend
+const isShare = (checkName, spendIndex) => {
+  return spends[spendIndex].shareholder.includes(checkName)
+}
 
+
+window.addEventListener('beforeunload', (event) => {
+  // Perform cleanup or show a confirmation message
+  event.preventDefault();
+  event.returnValue = '';
+});
+
+
+// Render function
 const SpendTable = () => {
-
-  const isShare = (checkName, spendIndex) => {
-    return spends[spendIndex].shareholder.includes(checkName)
-  }
 
   // State to track the current page
   // The parameter inside useState function is the initialState or initial value of number,
@@ -70,15 +82,13 @@ const SpendTable = () => {
   };
 
   const handleShareholderClick = (shareIndex, name, index) => {
-    // Your custom onClick logic goes here
-
     // Update to Spend object: Remove or add stakeholder to a spend
     spends[index].updateShareholder(name);
-
-    console.log(shareIndex, name, index);
-    //
+    // Add function to save data back to database on exit event
   };
 
+
+  // Block of code for render React components
   return (
     <>
       {/* Increasement buttons */}
@@ -100,8 +110,8 @@ const SpendTable = () => {
       </div>
       {/* Table of spend */}
       <table>
+        {/* Label rows */}
         <thead>
-          {/* Label rows */}
           <tr>
             <th>ID</th>
             <th>Name</th>
@@ -111,7 +121,7 @@ const SpendTable = () => {
             <th>Per Share</th>
           </tr>
         </thead>
-
+        {/* Data rows */}
         <tbody>
           {/* Loop throught the displayedData, create a row for each data*/}
           {displayedData.map((item, index) => (
@@ -127,7 +137,7 @@ const SpendTable = () => {
               {/* Payer dropdown list */}
               <td>{DropDownList(index, selectedOptions[index], shareholderName, handleOptionChange)}</td>
 
-              {/* Toggle buttons for choosing all stakeholders */}
+              {/* Toggle buttons for choosing all shareholders */}
               <td>
                 {shareholderName.map((name, shareIndex) => (
                   <MyButton

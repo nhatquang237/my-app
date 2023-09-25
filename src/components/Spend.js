@@ -22,14 +22,28 @@ class Spend {
     this.per_share = this.value / this.divisor;
 
   }
-  // Custom method to increment the count
+  // Function to update divisor value
+  updateDivisor = () => {
+    this.divisor = this.shareholder.length;
+  }
+
+  // Function to update Per share value
+  updatePerShare = () => {
+    this.per_share = this.value / this.divisor;
+  }
+
+  // Function to update shareholder list
   updateShareholder = (target_name) => {
     if (this.shareholder.includes(target_name)){
       this.shareholder = this.shareholder.filter(name => name !== target_name);
     } else {
       this.shareholder.push(target_name);
-    }
+    };
+    this.updateDivisor();
+    this.updatePerShare();
   }
+
+
 }
 
 export default Spend;
