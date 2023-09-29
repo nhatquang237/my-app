@@ -23,8 +23,9 @@ function MyButton(props) {
   const [share, setShare] = useState(isShare);
 
   const nestedHandle = () => {
-    restProps.onClick()
-    setShare(!share)
+    if(restProps.onClick()){
+      setShare(!share)
+    }
   }
 
   return (
