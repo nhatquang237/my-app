@@ -3,19 +3,13 @@ import React, { useState } from 'react';
 import Spend from './Spend.js';
 import MyButton from './CustomButton.js';
 import DropDownList from './DropDownList.js';
+import data from '../data/SpendData.js';
 
-// Data for the dropdown options
 // For future development: shareholderName will be get from server Node.js
-const shareholderName = ['Quang', 'Tai', 'Phuc', 'Thanh', 'Tien'];
+const shareholderName = data.shareholderData;
 
-// Sample data for the table
 // For future development: spendData will be get from server Node.js
-var spendData = [
-  { name: 'Water', value: 10, payer: 'Quang', shareholder: ['Quang', 'Tai', 'Phuc', 'Thanh'] },
-  { name: 'Electricity ', value: 100, payer: 'Tai', shareholder: ['Quang', 'Tai', 'Phuc', 'Thanh'] },
-  { name: 'Stuff', value: 20, payer: 'Phuc', shareholder: ['Quang', 'Phuc', 'Thanh'] },
-  { name: 'Book', value: 5, payer: 'Quang'},
-]
+var spendData = data.spendData
 
 // Code block to create an array of Spend objects (spends) from spendData and
 // an array of payers (payers)
