@@ -1,31 +1,14 @@
 import React, { useState } from 'react';
 
-import Spend from './Spend.js';
 import MyButton from './CustomButton.js';
 import DropDownList from './DropDownList.js';
 import data from '../data/SpendData.js';
 
-// For future development: shareholderName will be get from server Node.js
+// data got from server Node.js
 const shareholderName = data.shareholderData;
-
-// For future development: spendData will be get from server Node.js
-var spendData = data.spendData
-
-// Code block to create an array of Spend objects (spends) from spendData and
-// an array of payers (payers)
-let spends = [];
-let payers = [];
-let per_shares = [];
-function initSpend (input_data) {
-  // Collect payer data
-  payers.push(input_data.payer);
-
-  // Collect spend data
-  let spend = new Spend(input_data);
-  spends.push(spend);
-  per_shares.push(spend.per_share);
-}
-spendData.forEach(initSpend);
+let spends = data.spends;
+let payers = data.payers;
+let per_shares = data.per_shares;
 
 // Function to check if a name is in shareholder array of a spend
 const isShare = (checkName, spendIndex) => {
@@ -93,6 +76,7 @@ const SpendTable = () => {
 
     return updatedList
   }
+
 
   // Block of code for render React components
   return (
