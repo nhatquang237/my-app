@@ -5,7 +5,7 @@ import DropDownList from './DropDownList.js';
 import data from '../data/SpendData.js';
 
 // data got from server Node.js
-const shareholderName = data.shareholderData;
+const shareholderName = data.shareholderData.names;
 let spends = data.spends;
 let payers = data.payers;
 let per_shares = data.per_shares;
