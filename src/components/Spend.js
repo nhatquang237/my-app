@@ -1,8 +1,10 @@
 
-
 // All the data to create spends should came from database
 class Spend {
   constructor(params) {
+    // Information of spend
+    this.id = params._id;
+
     // Information of spend
     this.name = params.name;
 
@@ -20,6 +22,9 @@ class Spend {
 
     // Per share
     this.per_share = this.value / this.divisor;
+
+    // Stagin variable
+    this.hash = this.createHashString()
 
   }
   // Function to update divisor value
@@ -49,6 +54,22 @@ class Spend {
     // instead of have separate state for each property in this object
     this.updateDivisor();
     this.updatePerShare();
+    return true
+  }
+
+  // Function to create hash string to check if object is updated
+  createHashString = () => {
+    // Data to hash
+    const hash = this.id + this.name + this.value + this.payer + this.shareholder;
+    return hash
+  }
+
+  // Function to check if object is change
+  isChanged = () => {
+    const currentHash = this.createHashString()
+    if (currentHash === this.hash){
+      return false
+    }
     return true
   }
 

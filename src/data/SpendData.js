@@ -4,7 +4,7 @@ const url = 'http://localhost:3001/data'
 
 async function getData() {
   try {
-    // Send a GET request to the backend API
+    // Send a GET request to the backend
     const response = await axios.get(url);
     return response.data
   } catch (error) {
