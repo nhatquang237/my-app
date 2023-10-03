@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import MyButton from './CustomButton.js';
 import DropDownList from './DropDownList.js';
+import TextFieldInput from './TextField.js'
+import ValueFieldInput from './NumberField.js'
 import {data, updateData} from '../data/SpendData.js';
 
 // data got from server Node.js
@@ -118,10 +120,13 @@ const SpendTable = () => {
               <td>{index + 1}</td>
 
               {/* Information of spend */}
-              <td>{item.name}</td>
+              <td>{TextFieldInput(item.name)}</td>
+              {/* Add state and event handler to update value to spend object */}
+              {/* <td>{item.name}</td> */}
 
               {/* Value of spend */}
-              <td>{item.value}</td>
+              {/* Add state and event handler to update value to spend object */}
+              <td>{ValueFieldInput(item.value)}</td>
 
               {/* Payer dropdown list */}
               <td>{DropDownList(index, selectedPayer[index], shareholderName, handlePayerChange)}</td>
