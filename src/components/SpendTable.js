@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import MyButton from './CustomButton.js';
 import DropDownList from './DropDownList.js';
-import data from '../data/SpendData.js';
+import {data, updateData} from '../data/SpendData.js';
 
 // data got from server Node.js
 const shareholderName = data.shareholderData.names;
@@ -15,27 +15,36 @@ const isShare = (checkName, spendIndex) => {
   return spends[spendIndex].shareholder.includes(checkName)
 }
 
-// Function to call when users exit our site:
-// 1-Close the tab
-// 2-Close browser
-window.addEventListener('beforeunload', (event) => {
-  // Perform cleanup or show a confirmation message
-  event.preventDefault();
-  event.returnValue = '';
+// Function to check if we need to update database
+const isNeedUpdate = async () => {
   let updateList = spends.filter(spend => spend.isChanged());
   if (updateList.length){
     console.log("Need update", updateList)
+    await updateData(updateList)
     // Function to create a POST method to update data from updateList to database will be implemented SOON.
   } else {
     console.log("No need to update")
   }
+}
+
+
+// Function to call when users exit our site:
+// 1-Close the tab
+// 2-Close browser
+
+
+
+window.addEventListener('beforeunload', async (event) => {
+  // Perform cleanup or show a confirmation message
+  event.preventDefault();
+  event.returnValue = '';
+  await isNeedUpdate();
   // Add some more function to call for:
   // 1-Clean up process
   // 2-Update the last state of data to database
 
   // Tasks to do:
-  // 1-Implement a fucking simple server using Node.js :))) DONE
-  // 2-Implement mentioned function in line 28
+  // 1-Implement mentioned function in line 24
 });
 
 

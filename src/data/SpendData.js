@@ -1,7 +1,9 @@
 import axios from 'axios';
 import Spend from '../components/Spend';
 const url = 'http://localhost:3001/data'
+const updateUrl = 'http://localhost:3001/update'
 
+// Functuon to get data from backend server to show in UI
 async function getData() {
   try {
     // Send a GET request to the backend
@@ -12,7 +14,18 @@ async function getData() {
   }
 }
 
-var data = await getData();
+// Function to send updated data back to backend to save in database
+export async function updateData(updatedData) {
+  try {
+    // Send a GET request to the backend
+    const response = await axios.post(updateUrl, updatedData);
+    return response.data
+  } catch (error) {
+    throw error; // Re-throw the error to handle it elsewhere if needed
+  }
+}
+
+export var data = await getData();
 
 var spendData = data.spendData
 
@@ -36,5 +49,3 @@ spendData.forEach(initSpend);
 data.spends = spends;
 data.payers = payers;
 data.per_shares = per_shares;
-
-export default data
