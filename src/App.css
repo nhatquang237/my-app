@@ -41,7 +41,7 @@
 
 table {
   border-collapse: collapse;
-  width: 50%;
+  width: fit-content; /* always fits its child width */
   margin: 0 auto; /* Center the table on the page */
 }
 
