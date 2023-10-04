@@ -26,7 +26,7 @@ function MyButton(props) {
 
   const [share, setShare] = useState(isShare);
 
-  const nestedHandle = () => {
+  const onClickHandle = () => {
     if(restProps.onClick()){
       setShare(!share)
     }
@@ -38,7 +38,7 @@ function MyButton(props) {
       <Button
         variant="contained"
         color={colorCheck(share)} sx={{ ml: 2 }}
-        onClick={nestedHandle}
+        onClick={onClickHandle}
       >
         {props.children}
       </Button>
