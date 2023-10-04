@@ -3,7 +3,7 @@ import Spend from '../components/Spend';
 const url = 'http://localhost:3001/data'
 const updateUrl = 'http://localhost:3001/update'
 
-// Functuon to get data from backend server to show in UI
+// Function to get data from backend server to show in UI
 async function getData() {
   try {
     // Send a GET request to the backend
