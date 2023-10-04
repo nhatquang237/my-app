@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 
-function TextFieldInput(originalText) {
+function TextFieldInput(originalText, index, outerHandleChange) {
   const [text, setText] = useState(originalText);
 
   const handleChange = (event) => {
-    setText(event.target.value);
+    let value = event.target.value;
+    outerHandleChange(index, value)
+    setText(value);
   };
 
   return (

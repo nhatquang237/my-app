@@ -27,6 +27,20 @@ class Spend {
     this.hash = this.createHashString()
 
   }
+  // Function to update name
+  updateName = (newName) => {
+    if (newName){
+      this.name = newName;
+    }
+  }
+  // Function to update spend value
+  updateValue = (newValue) => {
+    if (newValue !== this.value){
+      this.value = newValue;
+      this.updatePerShare()
+    }
+  }
+
   // Function to update divisor value
   updateDivisor = () => {
     this.divisor = this.shareholder.length;
@@ -74,6 +88,6 @@ class Spend {
   }
 
 
-}
+};
 
 export default Spend;

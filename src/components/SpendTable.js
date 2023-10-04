@@ -95,7 +95,24 @@ const SpendTable = () => {
     return updatedList
   }
 
+  const handleNameChange = (index, value) => {
+    spends[index].updateName(value);
+  }
 
+  const handleValueChange = (index, value) => {
+    spends[index].updateValue(value);
+    // Update perShares list
+    setPerShares(update_list(perShares, spends[index].per_share, index))
+  }
+
+  const toCurrencyFormat = (value) => {
+    let currencyFormat = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'VND',
+      maximumSignificantDigits: 4,
+    });
+    return currencyFormat.format(value)
+  }
   // Block of code for render React components
   return (
     <>
@@ -120,13 +137,13 @@ const SpendTable = () => {
               <td>{index + 1}</td>
 
               {/* Information of spend */}
-              <td>{TextFieldInput(item.name)}</td>
+              <td>{TextFieldInput(item.name, index, handleNameChange)}</td>
               {/* Add state and event handler to update value to spend object */}
               {/* <td>{item.name}</td> */}
 
               {/* Value of spend */}
               {/* Add state and event handler to update value to spend object */}
-              <td>{ValueFieldInput(item.value)}</td>
+              <td>{ValueFieldInput(item.value, index, handleValueChange)}</td>
 
               {/* Payer dropdown list */}
               <td>{DropDownList(index, selectedPayer[index], shareholderName, handlePayerChange)}</td>
@@ -145,7 +162,7 @@ const SpendTable = () => {
               </td>
 
               {/* Value per person - only get 2 digits after the decimal */}
-              <td>{perShares[index].toFixed(2)}</td>
+              <td>{toCurrencyFormat(perShares[index].toFixed(0))}</td>
             </tr>
           ))}
         </tbody>
