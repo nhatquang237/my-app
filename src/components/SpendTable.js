@@ -6,6 +6,9 @@ import TextFieldInput from './TextField.js'
 import ValueFieldInput from './NumberField.js'
 import {data, updateData} from '../data/SpendData.js';
 
+import {toCurrencyFormat} from '../utils/StringUtils.js';
+import {update_list} from '../utils/ArrayUtils.js';
+
 // data got from server Node.js
 const shareholderName = data.shareholderData.names;
 let spends = data.spends;
@@ -23,7 +26,6 @@ const isNeedUpdate = async () => {
   if (updateList.length){
     console.log("Need update", updateList)
     await updateData(updateList)
-    // Function to create a POST method to update data from updateList to database will be implemented SOON.
   } else {
     console.log("No need to update")
   }
@@ -37,12 +39,6 @@ window.addEventListener('beforeunload', async (event) => {
   event.preventDefault();
   event.returnValue = '';
   await isNeedUpdate();
-  // Add some more function to call for:
-  // 1-Clean up process
-  // 2-Update the last state of data to database
-
-  // Tasks to do:
-  // 1-Implement mentioned function in line 24
 });
 
 
@@ -56,12 +52,6 @@ const SpendTable = () => {
 
     // Event handler for when an option is selected
   const handlePayerChange = (index, value) => {
-    // Get value and id of changed component
-    // const { name, value } = event.target;
-
-    // parseInt to get index from component's name
-    // var index = parseInt(name);
-
     // Update components state
     // setSelectedPayer is not explicitly defined in our component code,
     // it's provided by React when you call useState, and you can use it to set the value of count as needed
@@ -91,26 +81,6 @@ const SpendTable = () => {
     spends[index].updateValue(value);
     // Update perShares list
     setPerShares(update_list(perShares, spends[index].per_share, index))
-  }
-
-  // Function to turn a number into currency format: For better presentation format
-  const toCurrencyFormat = (value) => {
-    let currencyFormat = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'VND',
-      maximumSignificantDigits: 4,
-    });
-    return currencyFormat.format(value)
-  }
-
-  // Function use for updating state of components that have state value equal to a list.
-  const update_list = (targetList, newValue, index) => {
-    // Create a new list that is a copy of the old list using the spread operator
-    // another way to do is use: Array.from()
-    const updatedList = [...targetList];
-    updatedList[index] = newValue;
-
-    return updatedList
   }
 
 
@@ -164,8 +134,13 @@ const SpendTable = () => {
           ))}
         </tbody>
       </table>
+      {/* Table of member */}
     </>
   );
 };
 
 export default SpendTable;
+
+// NOTE for the next development: To night-5/10/2023
+// Create class to show static data for spends, similar to table in form on google sheet
+// https://docs.google.com/spreadsheets/d/1eHKVnwERarsWtzaN75m97AIoz5pOz9oo/edit#gid=246766272
