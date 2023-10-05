@@ -29,13 +29,9 @@ const isNeedUpdate = async () => {
   }
 }
 
-
 // Function to call when users exit our site:
 // 1-Close the tab
 // 2-Close browser
-
-
-
 window.addEventListener('beforeunload', async (event) => {
   // Perform cleanup or show a confirmation message
   event.preventDefault();
@@ -50,7 +46,7 @@ window.addEventListener('beforeunload', async (event) => {
 });
 
 
-// Render function
+// Code for main component SpendTable
 const SpendTable = () => {
 
   // The parameter inside useState function is the initialState or initial value of number,
