@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Spend from '../components/Spend';
+import Spend from './Spend';
 const url = 'http://localhost:3001/data'
 const updateUrl = 'http://localhost:3001/update'
 

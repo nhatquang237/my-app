@@ -55,6 +55,7 @@ const SpendTable = () => {
     // Update components state
     // setSelectedPayer is not explicitly defined in our component code,
     // it's provided by React when you call useState, and you can use it to set the value of count as needed
+
     setSelectedPayer(update_list(selectedPayer, value, index));
     spends[index].updatePayer(value);
   };
