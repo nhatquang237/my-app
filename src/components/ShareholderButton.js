@@ -16,7 +16,7 @@ const colorCheck = (isShare) => {
   return color
 };
 
-function MyButton(props) {
+function ShareholderButton(props) {
   // Extract custom props
   // Below is shortcut to define multi var or const. But only achive when variable name equal to key in props object
   // Have a look at below link to get more
@@ -46,4 +46,4 @@ function MyButton(props) {
   );
 }
 
-export default MyButton;
+export default ShareholderButton;

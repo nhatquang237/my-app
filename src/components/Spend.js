@@ -27,12 +27,20 @@ class Spend {
     this.hash = this.createHashString()
 
   }
+  // Function to update payer
+  updatePayer = (newPayer) => {
+    if (newPayer !== this.payer){
+      this.payer = newPayer;
+    }
+  }
+
   // Function to update name
   updateName = (newName) => {
     if (newName){
       this.name = newName;
     }
   }
+
   // Function to update spend value
   updateValue = (newValue) => {
     if (newValue !== this.value){

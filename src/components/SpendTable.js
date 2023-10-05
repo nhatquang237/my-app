@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import MyButton from './CustomButton.js';
-import DropDownList from './DropDownList.js';
+import ShareholderButton from './ShareholderButton.js';
+import PayerList from './PayerList.js';
 import TextFieldInput from './TextField.js'
 import ValueFieldInput from './NumberField.js'
 import {data, updateData} from '../data/SpendData.js';
@@ -59,52 +59,45 @@ const SpendTable = () => {
   const [perShares, setPerShares] = useState(per_shares);
 
     // Event handler for when an option is selected
-  const handlePayerChange = (event) => {
+  const handlePayerChange = (index, value) => {
     // Get value and id of changed component
-    const { name, value } = event.target;
+    // const { name, value } = event.target;
 
     // parseInt to get index from component's name
-    var index = parseInt(name);
+    // var index = parseInt(name);
 
     // Update components state
     // setSelectedPayer is not explicitly defined in our component code,
     // it's provided by React when you call useState, and you can use it to set the value of count as needed
     setSelectedPayer(update_list(selectedPayer, value, index));
+    spends[index].updatePayer(value);
   };
 
+  // Function call when users interact with shareholder buttons. Called in ShareholderButton
   const handleShareholderClick = (name, index) => {
     // Update to Spend object: Remove or add stakeholder to a spend
     if (!spends[index].updateShareholder(name)) {
       return false
     };
-    // Add function to save data back to database on exit event
 
     // Update perShares list
     setPerShares(update_list(perShares, spends[index].per_share, index))
     return true
   };
 
-  const update_list = (targetList, newValue, index) => {
-    // Function use for updating state of components that have state value equal to a list.
-
-    // Create a new list that is a copy of the old list using the spread operator
-    // another way to do is use: Array.from()
-    const updatedList = [...targetList];
-    updatedList[index] = newValue;
-
-    return updatedList
-  }
-
+  // Function to update name of spend to Spend object: For saving to database
   const handleNameChange = (index, value) => {
     spends[index].updateName(value);
   }
 
+  // Function to update relative variables when value of spend change.
   const handleValueChange = (index, value) => {
     spends[index].updateValue(value);
     // Update perShares list
     setPerShares(update_list(perShares, spends[index].per_share, index))
   }
 
+  // Function to turn a number into currency format: For better presentation format
   const toCurrencyFormat = (value) => {
     let currencyFormat = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -113,7 +106,19 @@ const SpendTable = () => {
     });
     return currencyFormat.format(value)
   }
-  // Block of code for render React components
+
+  // Function use for updating state of components that have state value equal to a list.
+  const update_list = (targetList, newValue, index) => {
+    // Create a new list that is a copy of the old list using the spread operator
+    // another way to do is use: Array.from()
+    const updatedList = [...targetList];
+    updatedList[index] = newValue;
+
+    return updatedList
+  }
+
+
+  // Block of code for render React components: Should not include logic
   return (
     <>
       {/* Table of spend */}
@@ -138,30 +143,26 @@ const SpendTable = () => {
 
               {/* Information of spend */}
               <td>{TextFieldInput(item.name, index, handleNameChange)}</td>
-              {/* Add state and event handler to update value to spend object */}
-              {/* <td>{item.name}</td> */}
 
-              {/* Value of spend */}
-              {/* Add state and event handler to update value to spend object */}
+              {/* Value of spend: Money */}
               <td>{ValueFieldInput(item.value, index, handleValueChange)}</td>
 
               {/* Payer dropdown list */}
-              <td>{DropDownList(index, selectedPayer[index], shareholderName, handlePayerChange)}</td>
+              <td>{PayerList(index, selectedPayer[index], shareholderName, handlePayerChange)}</td>
 
-              {/* Toggle buttons for choosing all shareholders */}
+              {/* Toggle buttons for choosing shareholders-whose will share the spend */}
               <td>
                 {shareholderName.map((name, shareIndex) => (
-                  <MyButton
+                  <ShareholderButton
                     key={'btn_' +shareIndex}
                     isShare={isShare(name, index)}
-                    onClick={() => handleShareholderClick(name, index)}
-                  >
+                    onClick={() => handleShareholderClick(name, index)}>
                     {name}
-                  </MyButton>
+                  </ShareholderButton>
                 ))}
               </td>
 
-              {/* Value per person - only get 2 digits after the decimal */}
+              {/* Value per person-Formated in currency format */}
               <td>{toCurrencyFormat(perShares[index].toFixed(0))}</td>
             </tr>
           ))}
