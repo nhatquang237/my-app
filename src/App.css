@@ -62,3 +62,7 @@ tr:nth-child(even) {
 tr:hover {
   background-color: #ddd;
 }
+
+.numeric {
+  text-align: right;
+}

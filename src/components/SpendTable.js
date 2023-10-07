@@ -6,13 +6,14 @@ import TextFieldInput from './TextField.js'
 import ValueFieldInput from './NumberField.js'
 import {data, updateData} from '../data/SpendData.js';
 
-import {toCurrencyFormat} from '../utils/StringUtils.js';
+import {numberWithCommas} from '../utils/StringUtils.js';
 import {update_list} from '../utils/ArrayUtils.js';
 
 // data got from server Node.js
 const shareholderName = data.shareholderData.names;
 let spends = data.spends;
 let payers = data.payers;
+let rawMembers = data.members;
 let per_shares = data.per_shares;
 
 // Function to check if a name is in shareholder array of a spend
@@ -49,6 +50,7 @@ const SpendTable = () => {
   // or we can say that is default value
   const [selectedPayer, setSelectedPayer] = useState(payers);
   const [perShares, setPerShares] = useState(per_shares);
+  const [members, setMembers] = useState(rawMembers);
 
     // Event handler for when an option is selected
   const handlePayerChange = (index, value) => {
@@ -85,7 +87,7 @@ const SpendTable = () => {
   }
 
 
-  // Block of code for render React components: Should not include logic
+  // Block of code for render React components: Should not include any logic
   return (
     <>
       {/* Table of spend */}
@@ -105,7 +107,7 @@ const SpendTable = () => {
         <tbody>
           {/* Loop throught the spends, create a row for each data*/}
           {spends.map((item, index) => (
-            <tr key={index}>
+            <tr key={'spendTb_' + index}>
               <td>{index + 1}</td>
 
               {/* Information of spend */}
@@ -130,12 +132,37 @@ const SpendTable = () => {
               </td>
 
               {/* Value per person-Formated in currency format */}
-              <td>{toCurrencyFormat(perShares[index].toFixed(0))}</td>
+              <td className="numeric">{numberWithCommas(perShares[index])}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      <br></br>
       {/* Table of member */}
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Paid</th>
+            <th>Spending</th>
+            <th>Remaining</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* Loop throught the spends, create a row for each data*/}
+          {members.map((member, index) => (
+            <tr key={'memberTb_' + index}>
+              <td>{index + 1}</td>
+              <td>{member.name }</td>
+              {/* Implement state for these numbers below */}
+              <td className="numeric">{member.getAmountSpent()}</td>
+              <td className="numeric">{member.getSpending()}</td>
+              <td className="numeric">{member.getRemaining()}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 };
