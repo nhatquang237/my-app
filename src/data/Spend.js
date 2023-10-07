@@ -9,7 +9,7 @@ class Spend {
     this.name = params.name;
 
     // Value: Money
-    this.value = params.value;
+    this.value = Number(params.value);
 
     // Name of payer
     this.payer = params.payer;
@@ -93,6 +93,14 @@ class Spend {
       return false
     }
     return true
+  }
+
+  // Function to check if object is change
+  isHaveToPay = (memberName) => {
+    if (this.shareholder.includes(memberName)){
+      return true
+    }
+    return false
   }
 
 
