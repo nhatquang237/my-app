@@ -1,11 +1,9 @@
-import * as React from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 export default function PayerList(index, selectedOption, options, handleOptionChange) {
-  // const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -25,9 +23,6 @@ export default function PayerList(index, selectedOption, options, handleOptionCh
         {options.map((option, index) => (
           <MenuItem key={index} value={option}>{option}</MenuItem>
         ))}
-        {/* <MenuItem value={10}>Ten</MenuItem>
-        <MenuItem value={20}>Twenty</MenuItem>
-        <MenuItem value={30}>Thirty</MenuItem> */}
       </Select>
     </FormControl>
   );
