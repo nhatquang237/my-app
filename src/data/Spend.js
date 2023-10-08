@@ -17,6 +17,8 @@ class Spend {
     // List of members that will share that spend
     this.shareholder = params.shareholder || [params.payer];
 
+
+
     // Divisor: For calculation
     this.divisor = this.shareholder.length;
 
@@ -43,6 +45,7 @@ class Spend {
 
   // Function to update spend value
   updateValue = (newValue) => {
+    newValue = Number(newValue);
     if (newValue !== this.value){
       this.value = newValue;
       this.updatePerShare()
