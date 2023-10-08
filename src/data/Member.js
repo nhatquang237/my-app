@@ -16,6 +16,12 @@ class Member {
     // Remaining amount = amountSpent - spending;
     this.remaining = 0;
 
+    // Pay list: List of spend that member paid
+    this.paidList = [];
+
+    // Spending list: List of spend that member take part in
+    this.spendingList = [];
+
   }
   // For presentation purpose
   getSpending () {
@@ -26,6 +32,38 @@ class Member {
   }
   getRemaining () {
     return numberWithCommas(this.remaining)
+  }
+
+  // Function to remove spending from paidList of this member
+  removeFromPaidList = (spendName) => {
+    let index = this.paidList.indexOf(spendName)
+
+    if (index !== -1){
+      this.paidList.splice(index, 1);
+    }
+  }
+
+  // Function to remove spending from spendingList of this member
+  removeFromSpendingList = (spendName) => {
+    let index = this.spendingList.indexOf(spendName)
+
+    if (index !== -1){
+      this.spendingList.splice(index, 1);
+    }
+  }
+
+  // Function to update spending value of this member
+  addToPaidList = (spendName) => {
+    if (!this.paidList.includes(spendName)){
+      this.paidList.push(spendName);
+    }
+  }
+
+  // Function to update spending value of this member
+  addToSpendingList = (spendName) => {
+    if (!this.spendingList.includes(spendName)){
+      this.spendingList.push(spendName);
+    }
   }
 
   // Function to update spending value of this member
