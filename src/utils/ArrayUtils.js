@@ -4,7 +4,10 @@ export const update_list = (targetList, newValue, index) => {
 // Create a new list that is a copy of the old list using the spread operator
 // another way to do is use: Array.from()
 const updatedList = [...targetList];
-updatedList[index] = newValue;
+
+if(index != undefined){
+  updatedList[index] = newValue;
+}
 
 return updatedList
 }

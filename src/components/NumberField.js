@@ -6,9 +6,10 @@ function ValueFieldInput(originalNumber, index, outerHandleChange) {
   const [value, setNumber] = useState(originalNumber);
 
   const handleChange = (event) => {
-    let value = event.target.value;
-    outerHandleChange(index, value)
-    setNumber(value);
+    let newValue = event.target.value;
+    let delta = newValue - value;
+    outerHandleChange(index, newValue, delta)
+    setNumber(newValue);
   };
 
   return (

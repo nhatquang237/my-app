@@ -80,10 +80,24 @@ const SpendTable = () => {
   }
 
   // Function to update relative variables when value of spend change.
-  const handleValueChange = (index, value) => {
-    spends[index].updateValue(value);
-    // Update perShares list
-    setPerShares(update_list(perShares, spends[index].per_share, index))
+  const handleValueChange = (index, value, delta) => {
+    let spend = spends[index];
+
+    spend.updateValue(value);
+    // For Spend object: Update perShares list
+    setPerShares(update_list(perShares, spend.per_share, index))
+
+    // For Member objects that related to that spend
+    members.forEach(member => {
+      if(spend.payer === member.name){
+        member.updateAmountSpent(delta)
+      }
+      if(spend.shareholder.includes(member.name)){
+        member.updateSpending(delta / spend.shareholder.length)
+      }
+    });
+    setMembers(update_list(members))
+
   }
 
 
@@ -170,5 +184,4 @@ const SpendTable = () => {
 export default SpendTable;
 
 // NOTE for the next development: To night-5/10/2023
-// Create class to show static data for spends, similar to table in form on google sheet
-// https://docs.google.com/spreadsheets/d/1eHKVnwERarsWtzaN75m97AIoz5pOz9oo/edit#gid=246766272
+

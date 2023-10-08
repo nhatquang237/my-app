@@ -68,19 +68,15 @@ class Member {
 
   // Function to update spending value of this member
   updateSpending = (increment) => {
-    if (increment > 0){
-      this.spending += increment;
-      this.updateRemaining()
-    }
+    this.spending += increment;
+    this.updateRemaining()
   }
 
   // Function to update amount of money that member had already spent
   // including paying for another member stuff
   updateAmountSpent = (increment) => {
-    if (increment > 0){
-      this.amountSpent += increment;
-      this.updateRemaining()
-    }
+    this.amountSpent += increment;
+    this.updateRemaining()
   }
 
   // Function to update remaining
