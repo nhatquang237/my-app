@@ -5,9 +5,9 @@ function TextFieldInput(originalText, index, outerHandleChange) {
   const [text, setText] = useState(originalText);
 
   const handleChange = (event) => {
-    let value = event.target.value;
-    outerHandleChange(index, value)
-    setText(value);
+    let newValue = event.target.value;
+    outerHandleChange(index, newValue, text)
+    setText(newValue);
   };
 
   return (

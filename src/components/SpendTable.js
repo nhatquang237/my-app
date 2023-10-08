@@ -75,8 +75,23 @@ const SpendTable = () => {
   };
 
   // Function to update name of spend to Spend object: For saving to database
-  const handleNameChange = (index, value) => {
-    spends[index].updateName(value);
+  const handleNameChange = (index, newValue, oldValue) => {
+    let spend = spends[index];
+    // For Spend object: Update name of spend
+    spend.updateName(newValue);
+
+    // For Member object: Update SpendingList, PaidList
+    members.forEach(member => {
+      if(spend.payer === member.name){
+        member.addToPaidList(newValue)
+        member.removeFromPaidList(oldValue)
+      }
+      if(spend.shareholder.includes(member.name)){
+        member.addToSpendingList(newValue)
+        member.removeFromSpendingList(oldValue)
+      }
+    });
+    setMembers(update_list(members))
   }
 
   // Function to update relative variables when value of spend change.
