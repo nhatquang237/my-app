@@ -53,13 +53,29 @@ const SpendTable = () => {
   const [members, setMembers] = useState(rawMembers);
 
     // Event handler for when an option is selected
-  const handlePayerChange = (index, value) => {
+  const handlePayerChange = (index, newValue, oldValue) => {
     // Update components state
     // setSelectedPayer is not explicitly defined in our component code,
     // it's provided by React when you call useState, and you can use it to set the value of count as needed
+    let spend = spends[index];
+    // For updating newValue to dropdown list
+    setSelectedPayer(update_list(selectedPayer, newValue, index));
 
-    setSelectedPayer(update_list(selectedPayer, value, index));
-    spends[index].updatePayer(value);
+    // For spend object:
+    spend.updatePayer(newValue);
+
+    // For Member object: Update SpendingList, PaidList
+    members.forEach(member => {
+      if(member.name === oldValue){
+        member.updateAmountSpent(- spend.value)
+        member.removeFromPaidList(oldValue)
+      }
+      if(member.name === newValue){
+        member.updateAmountSpent(spend.value)
+        member.addToPaidList(newValue)
+      }
+    });
+    setMembers(update_list(members))
   };
 
   // Function call when users interact with shareholder buttons. Called in ShareholderButton

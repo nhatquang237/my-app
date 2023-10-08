@@ -6,8 +6,8 @@ import Select from '@mui/material/Select';
 export default function PayerList(index, selectedOption, options, handleOptionChange) {
 
   const handleChange = (event) => {
-    const value = event.target.value;
-    handleOptionChange(index, value)
+    const newValue = event.target.value;
+    handleOptionChange(index, newValue, selectedOption)
   };
 
   return (
