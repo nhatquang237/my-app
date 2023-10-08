@@ -64,8 +64,6 @@ function initSpend (input_data) {
 
     // If member is payer => update the value of spend as amount spent of this member
     if(spend.payer === member.name){
-      console.log(member.name, spend.value)
-      console.log(typeof spend.value)
       member.updateAmountSpent(spend.value);
     };
   });
