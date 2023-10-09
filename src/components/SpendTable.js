@@ -80,13 +80,42 @@ const SpendTable = () => {
 
   // Function call when users interact with shareholder buttons. Called in ShareholderButton
   const handleShareholderClick = (name, index) => {
+    let spend = spends[index];
+    const oldPerShare = spend.perShare;
     // Update to Spend object: Remove or add stakeholder to a spend
-    if (!spends[index].updateShareholder(name)) {
+    if (!spend.updateShareholder(name)) {
       return false
     };
+    // Updated value of divisor
+    const newPerShare = spend.perShare;
+    const changeAmount = newPerShare - oldPerShare;
 
     // Update perShares list
-    setPerShares(update_list(perShares, spends[index].per_share, index))
+    setPerShares(update_list(perShares, spend.perShare, index));
+
+    // For Member object: Update SpendingList, PaidList
+    members.forEach(member => {
+      // If member still in the shareholder list after click event
+      //=> spending of this member have to be updated in two cases:
+      // 1-New member to this spend: Increase the newPerShare
+      // 2-Old member: Update with changeAmount (may be increase or decrease)
+      if(spend.shareholder.includes(member.name)){
+        if(member.name === name){
+          member.addToSpendingList(spend.name)
+          member.updateSpending(newPerShare)
+        } else {
+          member.updateSpending(changeAmount)
+        }
+        // If member not in the shareholder list after click event
+        // => This member was remove from shareholder list:
+        // 1-Remove this spend from spendingList of this member
+        // 2-Update spending of this member: Decrease oldPerShare
+      } else if(member.name === name){
+        member.removeFromSpendingList(spend.name)
+        member.updateSpending(- oldPerShare)
+      }
+    });
+    setMembers(update_list(members))
     return true
   };
 
@@ -116,7 +145,7 @@ const SpendTable = () => {
 
     spend.updateValue(value);
     // For Spend object: Update perShares list
-    setPerShares(update_list(perShares, spend.per_share, index))
+    setPerShares(update_list(perShares, spend.perShare, index))
 
     // For Member objects that related to that spend
     members.forEach(member => {

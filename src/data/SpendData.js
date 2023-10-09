@@ -53,13 +53,13 @@ function initSpend (input_data) {
   // Collect spend data
   let spend = new Spend(input_data);
   spends.push(spend);
-  per_shares.push(spend.per_share);
+  per_shares.push(spend.perShare);
 
   members.forEach((member) => {
 
     // If member is in the shareholder list => update per_share value of this spend as spending of this member
     if(spend.isHaveToPay(member.name)){
-      member.updateSpending(spend.per_share);
+      member.updateSpending(spend.perShare);
     };
 
     // If member is payer => update the value of spend as amount spent of this member

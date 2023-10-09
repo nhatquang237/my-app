@@ -23,7 +23,7 @@ class Spend {
     this.divisor = this.shareholder.length;
 
     // Per share
-    this.per_share = this.value / this.divisor;
+    this.perShare = this.value / this.divisor;
 
     // Stagin variable
     this.hash = this.createHashString()
@@ -59,7 +59,7 @@ class Spend {
 
   // Function to update Per share value
   updatePerShare = () => {
-    this.per_share = this.value / this.divisor;
+    this.perShare = this.value / this.divisor;
   }
 
   // Function to update shareholder list
