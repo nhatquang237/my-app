@@ -17,7 +17,6 @@ function TextFieldInput(originalText, index, outerHandleChange) {
       value={text}
       onChange={handleChange}
       size='small'
-
     />
   );
 }

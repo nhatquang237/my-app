@@ -66,3 +66,11 @@ tr:hover {
 .numeric {
   text-align: right;
 }
+
+.divWithBorder {
+  text-align: left;
+  margin-top: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+}

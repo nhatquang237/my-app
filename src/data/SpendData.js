@@ -1,8 +1,11 @@
 import axios from 'axios';
+
 import Spend from './Spend';
 import Member from './Member';
+
 const url = 'http://localhost:3001/data'
 const updateUrl = 'http://localhost:3001/update'
+const addUrl = 'http://localhost:3001/add'
 
 // Function to get data from backend server to show in UI
 async function getData() {

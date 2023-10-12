@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 
 import ShareholderButton from './ShareholderButton.js';
 import PayerList from './PayerList.js';
-import TextFieldInput from './TextField.js'
-import ValueFieldInput from './NumberField.js'
+import TextFieldInput from './TextField.js';
+import ValueFieldInput from './NumberField.js';
+import Form from './Form.js';
+
 import {data, updateData} from '../data/SpendData.js';
 
 import {numberWithCommas} from '../utils/StringUtils.js';
@@ -25,10 +27,7 @@ const isShare = (checkName, spendIndex) => {
 const isNeedUpdate = async () => {
   let updateList = spends.filter(spend => spend.isChanged());
   if (updateList.length){
-    console.log("Need update", updateList)
     await updateData(updateList)
-  } else {
-    console.log("No need to update")
   }
 }
 
@@ -165,78 +164,85 @@ const SpendTable = () => {
   return (
     <>
       {/* Table of spend */}
-      <table>
-        {/* Label rows */}
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Value</th>
-            <th>Payer</th>
-            <th>Shareholder</th>
-            <th>Per Share</th>
-          </tr>
-        </thead>
-        {/* Data rows */}
-        <tbody>
-          {/* Loop throught the spends, create a row for each data*/}
-          {spends.map((item, index) => (
-            <tr key={'spendTb_' + index}>
-              <td>{index + 1}</td>
-
-              {/* Information of spend */}
-              <td>{TextFieldInput(item.name, index, handleNameChange)}</td>
-
-              {/* Value of spend: Money */}
-              <td>{ValueFieldInput(item.value, index, handleValueChange)}</td>
-
-              {/* Payer dropdown list */}
-              <td>{PayerList(index, selectedPayer[index], shareholderName, handlePayerChange)}</td>
-
-              {/* Toggle buttons for choosing shareholders-whose will share the spend */}
-              <td>
-                {shareholderName.map((name, shareIndex) => (
-                  <ShareholderButton
-                    key={'btn_' +shareIndex}
-                    isShare={isShare(name, index)}
-                    onClick={() => handleShareholderClick(name, index)}>
-                    {name}
-                  </ShareholderButton>
-                ))}
-              </td>
-
-              {/* Value per person-Formated in currency format */}
-              <td className="numeric">{numberWithCommas(perShares[index])}</td>
+      <div style={{ display: 'flex', marginTop: '20px' }}>
+        <table style={{ height: '100%' }}>
+          {/* Label rows */}
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Value</th>
+              <th>Payer</th>
+              <th>Shareholder</th>
+              <th>Per Share</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <br></br>
-      {/* Table of member */}
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Paid</th>
-            <th>Spending</th>
-            <th>Remaining</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* Loop throught the spends, create a row for each data*/}
-          {members.map((member, index) => (
-            <tr key={'memberTb_' + index}>
-              <td>{index + 1}</td>
-              <td>{member.name }</td>
-              {/* Implement state for these numbers below */}
-              <td className="numeric">{member.getAmountSpent()}</td>
-              <td className="numeric">{member.getSpending()}</td>
-              <td className="numeric">{member.getRemaining()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          {/* Data rows */}
+          <tbody>
+            {/* Loop throught the spends, create a row for each data*/}
+            {spends.map((item, index) => (
+              <tr key={'spendTb_' + index}>
+                <td>{index + 1}</td>
+
+                {/* Information of spend */}
+                <td>{TextFieldInput(item.name, index, handleNameChange)}</td>
+
+                {/* Value of spend: Money */}
+                <td>{ValueFieldInput(item.value, index, handleValueChange)}</td>
+
+                {/* Payer dropdown list */}
+                <td>{PayerList(index, selectedPayer[index], shareholderName, handlePayerChange)}</td>
+
+                {/* Toggle buttons for choosing shareholders-whose will share the spend */}
+                <td>
+                  {shareholderName.map((name, shareIndex) => (
+                    <ShareholderButton
+                      key={'btn_' +shareIndex}
+                      isShare={isShare(name, index)}
+                      onClick={() => handleShareholderClick(name, index)}>
+                      {name}
+                    </ShareholderButton>
+                  ))}
+                </td>
+
+                {/* Value per person-Formated in currency format */}
+                <td className="numeric">{numberWithCommas(perShares[index])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table >
+        <div style={{ height: '100%', marginRight: '20px' }}>
+          {/* Table of member */}
+          <table >
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Paid</th>
+                <th>Spending</th>
+                <th>Remaining</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Loop throught the spends, create a row for each data*/}
+              {members.map((member, index) => (
+                <tr key={'memberTb_' + index}>
+                  <td>{index + 1}</td>
+                  <td>{member.name }</td>
+                  {/* Implement state for these numbers below */}
+                  <td className="numeric">{member.getAmountSpent()}</td>
+                  <td className="numeric">{member.getSpending()}</td>
+                  <td className="numeric">{member.getRemaining()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {/* Form for adding spend */}
+          <div className='divWithBorder'>
+            <Form shareholderNames={shareholderName} lastShareholder={shareholderName}></Form>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
