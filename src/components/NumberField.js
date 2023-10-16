@@ -1,15 +1,15 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import TextField from '@mui/material/TextField';
 
 function ValueFieldInput(originalNumber, index, outerHandleChange) {
-  const [value, setNumber] = useState(originalNumber);
+  let value = originalNumber;
 
   const handleChange = (event) => {
     let newValue = event.target.value;
     let delta = newValue - value;
     outerHandleChange(index, newValue, delta)
-    setNumber(newValue);
+    value = newValue;
   };
 
   return (

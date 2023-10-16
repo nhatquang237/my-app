@@ -15,10 +15,17 @@ class Form extends React.Component {
     this.handleAddNewSpend = restProps.onSubmit;
     this.state = {
       name: '',
-      spendValue: 0,
+      value: 0,
       payer: shareholderNames[0],
       shareholder: lastShareholder,
     };
+  }
+
+  resetState = () => {
+    this.state.name = '';
+    this.state.value = 0;
+
+    this.setState({ ...this.state });
   }
 
   handleNameChange = (e) => {
@@ -28,7 +35,7 @@ class Form extends React.Component {
 
   handleSpendValueChange = (e) => {
     const spendValue = e.target.value;
-    this.setState(update_object(this.state, spendValue, 'spendValue'))
+    this.setState(update_object(this.state, spendValue, 'value'))
   };
 
   handlePayerChange = (e) => {
@@ -42,8 +49,9 @@ class Form extends React.Component {
     let shareholder = this.state.shareholder;
     if (shareholder.includes(name)){
       let index = shareholder.indexOf(name)
-      shareholder.splice(index, 1);
-
+      if (shareholder.length > 1 ){
+        shareholder.splice(index, 1);
+      }
     } else {
       shareholder.push(name)
     }
@@ -53,15 +61,20 @@ class Form extends React.Component {
 
   validateData = () =>{
     let data = this.state;
-    if(data.name && data.payer && data.shareholder && data.spendValue){
+    if(data.name && data.payer && data.shareholder && data.value){
       console.log('Valid data');
+      return true
     }
+    return false
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.validateData()
-    this.handleAddNewSpend(this.state)
+    if(this.validateData()){
+      this.handleAddNewSpend(this.state)
+      this.resetState()
+      console.log(this.state)
+    }
     // Handle form submission here, e.g., send data to an API or perform validation
   };
 
@@ -72,6 +85,7 @@ class Form extends React.Component {
           <FormLabel>Add new spend</FormLabel>
           <TextField
             required={true}
+            value={this.state.name}
             id="outlined-basic"
             variant="outlined"
             size='small'

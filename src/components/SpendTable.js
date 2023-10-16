@@ -8,16 +8,13 @@ import Form from './Form.js';
 import Spend from '../data/Spend';
 
 import {data, updateData} from '../data/SpendData.js';
-
 import {numberWithCommas} from '../utils/StringUtils.js';
 import {update_list} from '../utils/ArrayUtils.js';
 
 // data got from server Node.js
 const shareholderName = data.shareholderData.names;
 let spends = data.spends;
-let payers = data.payers;
 let rawMembers = data.members;
-let per_shares = data.per_shares;
 
 // Function to check if a name is in shareholder array of a spend
 const isShare = (checkName, spendIndex) => {
@@ -48,8 +45,6 @@ const SpendTable = () => {
 
   // The parameter inside useState function is the initialState or initial value of number,
   // or we can say that is default value
-  const [selectedPayer, setSelectedPayer] = useState(payers);
-  const [perShares, setPerShares] = useState(per_shares);
   const [members, setMembers] = useState(rawMembers);
   const [allSpend, setAllSpend] = useState(spends);
 
@@ -59,9 +54,6 @@ const SpendTable = () => {
     // setSelectedPayer is not explicitly defined in our component code,
     // it's provided by React when you call useState, and you can use it to set the value of count as needed
     let spend = allSpend[index];
-    // For updating newValue to dropdown list
-    setSelectedPayer(update_list(selectedPayer, newValue, index));
-
     // For spend object:
     spend.updatePayer(newValue);
 
@@ -90,9 +82,6 @@ const SpendTable = () => {
     // Updated value of divisor
     const newPerShare = spend.perShare;
     const changeAmount = newPerShare - oldPerShare;
-
-    // Update perShares list
-    setPerShares(update_list(perShares, spend.perShare, index));
 
     // For Member object: Update SpendingList, PaidList
     members.forEach(member => {
@@ -145,8 +134,6 @@ const SpendTable = () => {
     let spend = allSpend[index];
 
     spend.updateValue(value);
-    // For Spend object: Update perShares list
-    setPerShares(update_list(perShares, spend.perShare, index))
 
     // For Member objects that related to that spend
     members.forEach(member => {
@@ -164,8 +151,8 @@ const SpendTable = () => {
   const handleAddNewSpend = (newSpend) => {
     let spend = new Spend(newSpend)
     console.log(spend)
-    // allSpend.push(spend)
-    // setAllSpend(update_list(allSpend))
+    allSpend.push(spend)
+    setAllSpend(update_list(allSpend))
   }
 
   // Block of code for render React components: Should not include any logic
@@ -188,18 +175,18 @@ const SpendTable = () => {
           {/* Data rows */}
           <tbody>
             {/* Loop throught the allSpend, create a row for each data*/}
-            {allSpend.map((item, index) => (
+            {allSpend.map((spend, index) => (
               <tr key={'spendTb_' + index}>
                 <td>{index + 1}</td>
 
                 {/* Information of spend */}
-                <td>{TextFieldInput(item.name, index, handleNameChange)}</td>
+                <td key={'textField_' + index}>{TextFieldInput(spend.name, index, handleNameChange)}</td>
 
                 {/* Value of spend: Money */}
-                <td>{ValueFieldInput(item.value, index, handleValueChange)}</td>
+                <td>{ValueFieldInput(spend.value, index, handleValueChange)}</td>
 
                 {/* Payer dropdown list */}
-                <td>{PayerList(index, selectedPayer[index], shareholderName, handlePayerChange)}</td>
+                <td>{PayerList(index, spend.payer, shareholderName, handlePayerChange)}</td>
 
                 {/* Toggle buttons for choosing shareholders-whose will share the spend */}
                 <td>
@@ -214,7 +201,7 @@ const SpendTable = () => {
                 </td>
 
                 {/* Value per person-Formated in currency format */}
-                <td className="numeric">{numberWithCommas(perShares[index])}</td>
+                <td className="numeric">{numberWithCommas(spend.perShare)}</td>
               </tr>
             ))}
           </tbody>
@@ -248,8 +235,8 @@ const SpendTable = () => {
           {/* Form for adding spend */}
           <div className='divWithBorder'>
             <Form
-              shareholderNames={shareholderName}
-              lastShareholder={shareholderName}
+              shareholderNames={[...shareholderName]}
+              lastShareholder={[...shareholderName]}
               onSubmit={handleAddNewSpend}>
             </Form>
           </div>
