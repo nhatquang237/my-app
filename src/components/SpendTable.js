@@ -5,6 +5,7 @@ import PayerList from './PayerList.js';
 import TextFieldInput from './TextField.js';
 import ValueFieldInput from './NumberField.js';
 import Form from './Form.js';
+import Spend from '../data/Spend';
 
 import {data, updateData} from '../data/SpendData.js';
 
@@ -50,13 +51,14 @@ const SpendTable = () => {
   const [selectedPayer, setSelectedPayer] = useState(payers);
   const [perShares, setPerShares] = useState(per_shares);
   const [members, setMembers] = useState(rawMembers);
+  const [allSpend, setAllSpend] = useState(spends);
 
     // Event handler for when an option is selected
   const handlePayerChange = (index, newValue, oldValue) => {
     // Update components state
     // setSelectedPayer is not explicitly defined in our component code,
     // it's provided by React when you call useState, and you can use it to set the value of count as needed
-    let spend = spends[index];
+    let spend = allSpend[index];
     // For updating newValue to dropdown list
     setSelectedPayer(update_list(selectedPayer, newValue, index));
 
@@ -79,7 +81,7 @@ const SpendTable = () => {
 
   // Function call when users interact with shareholder buttons. Called in ShareholderButton
   const handleShareholderClick = (name, index) => {
-    let spend = spends[index];
+    let spend = allSpend[index];
     const oldPerShare = spend.perShare;
     // Update to Spend object: Remove or add stakeholder to a spend
     if (!spend.updateShareholder(name)) {
@@ -120,7 +122,7 @@ const SpendTable = () => {
 
   // Function to update name of spend to Spend object: For saving to database
   const handleNameChange = (index, newValue, oldValue) => {
-    let spend = spends[index];
+    let spend = allSpend[index];
     // For Spend object: Update name of spend
     spend.updateName(newValue);
 
@@ -140,7 +142,7 @@ const SpendTable = () => {
 
   // Function to update relative variables when value of spend change.
   const handleValueChange = (index, value, delta) => {
-    let spend = spends[index];
+    let spend = allSpend[index];
 
     spend.updateValue(value);
     // For Spend object: Update perShares list
@@ -159,6 +161,12 @@ const SpendTable = () => {
 
   }
 
+  const handleAddNewSpend = (newSpend) => {
+    let spend = new Spend(newSpend)
+    console.log(spend)
+    // allSpend.push(spend)
+    // setAllSpend(update_list(allSpend))
+  }
 
   // Block of code for render React components: Should not include any logic
   return (
@@ -179,8 +187,8 @@ const SpendTable = () => {
           </thead>
           {/* Data rows */}
           <tbody>
-            {/* Loop throught the spends, create a row for each data*/}
-            {spends.map((item, index) => (
+            {/* Loop throught the allSpend, create a row for each data*/}
+            {allSpend.map((item, index) => (
               <tr key={'spendTb_' + index}>
                 <td>{index + 1}</td>
 
@@ -224,7 +232,7 @@ const SpendTable = () => {
               </tr>
             </thead>
             <tbody>
-              {/* Loop throught the spends, create a row for each data*/}
+              {/* Loop throught the member, create a row for each member*/}
               {members.map((member, index) => (
                 <tr key={'memberTb_' + index}>
                   <td>{index + 1}</td>
@@ -239,7 +247,11 @@ const SpendTable = () => {
           </table>
           {/* Form for adding spend */}
           <div className='divWithBorder'>
-            <Form shareholderNames={shareholderName} lastShareholder={shareholderName}></Form>
+            <Form
+              shareholderNames={shareholderName}
+              lastShareholder={shareholderName}
+              onSubmit={handleAddNewSpend}>
+            </Form>
           </div>
         </div>
       </div>

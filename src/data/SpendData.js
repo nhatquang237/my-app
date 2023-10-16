@@ -22,7 +22,18 @@ async function getData() {
 export async function updateData(updatedData) {
   try {
     // Send a GET request to the backend
-    const response = await axios.post(updateUrl, updatedData);
+    const response = await axios.put(updateUrl, updatedData);
+    return response.data
+  } catch (error) {
+    throw error; // Re-throw the error to handle it elsewhere if needed
+  }
+}
+
+// Function to send updated data back to backend to save in database
+export async function addData(newData) {
+  try {
+    // Send a GET request to the backend
+    const response = await axios.post(addUrl, newData);
     return response.data
   } catch (error) {
     throw error; // Re-throw the error to handle it elsewhere if needed
