@@ -11,11 +11,12 @@ function TextFieldInput(originalText, index, outerHandleChange) {
 
   return (
     <TextField
+      required={true}
       id="outlined-basic"
       variant="outlined"
       value={text}
-      onChange={handleChange}
       size='small'
+      onChange={handleChange}
     />
   );
 }

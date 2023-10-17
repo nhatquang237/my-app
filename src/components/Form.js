@@ -2,6 +2,8 @@ import React from 'react';
 import { FormControl, FormControlLabel, Checkbox, FormLabel, RadioGroup, Radio } from '@mui/material';
 import TextField from '@mui/material/TextField';
 
+// import TextFieldInput from './TextField.js';
+
 import '../styles/Form.css';
 
 import {update_object} from '../utils/ArrayUtils';
@@ -22,10 +24,7 @@ class Form extends React.Component {
   }
 
   resetState = () => {
-    this.state.name = '';
-    this.state.value = 0;
-
-    this.setState({ ...this.state });
+    this.setState({ ...this.state, value: 0, name: ''});
   }
 
   handleNameChange = (e) => {
