@@ -7,7 +7,7 @@ import ValueFieldInput from './NumberField.js';
 import Form from './Form.js';
 import Spend from '../data/Spend';
 
-import {data, updateData} from '../data/SpendData.js';
+import {addData, data, updateData} from '../data/SpendData.js';
 import {numberWithCommas} from '../utils/StringUtils.js';
 import {update_list} from '../utils/ArrayUtils.js';
 
@@ -16,9 +16,11 @@ const shareholderName = data.shareholderData.names;
 let spends = data.spends;
 let rawMembers = data.members;
 
+let newSpends = [];
+
 // Function to check if a name is in shareholder array of a spend
 const isShare = (checkName, spendIndex) => {
-  return spends[spendIndex].shareholder.includes(checkName)
+  return spends[spendIndex].shareholder.includes(checkName);
 }
 
 // Function to check if we need to update database
@@ -26,6 +28,10 @@ const isNeedUpdate = async () => {
   let updateList = spends.filter(spend => spend.isChanged());
   if (updateList.length){
     await updateData(updateList)
+  }
+
+  if (newSpends){
+    await addData(newSpends);
   }
 }
 
@@ -148,11 +154,36 @@ const SpendTable = () => {
 
   }
 
+
+  // Function to add new spend from Form data
   const handleAddNewSpend = (newSpend) => {
+
+    // Create new Spend object form form's data
     let spend = new Spend(newSpend)
-    console.log(spend)
+
+    // Add new object to current list of spend for rendering
     allSpend.push(spend)
+
+    // Add to new created list for updating to database later
+    newSpends.push(spend)
+
+    // Update the state of allSpend for rendering the Spend table
     setAllSpend(update_list(allSpend))
+
+    // Update the member table
+    // For Member object: Update SpendingList, PaidList
+    members.forEach(member => {
+      if(member.name === spend.payer){
+        member.addToPaidList(spend.name)
+        member.updateAmountSpent(spend.value)
+      }
+      if(spend.shareholder.includes(member.name)){
+        member.addToSpendingList(spend.name)
+        member.updateSpending(spend.perShare)
+      }
+    });
+
+    setMembers(update_list(members))
   }
 
   // Block of code for render React components: Should not include any logic

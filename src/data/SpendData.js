@@ -88,4 +88,3 @@ spendData.forEach(initSpend);
 data.spends = spends;
 data.payers = payers;
 data.members = members;
-data.per_shares = per_shares;
