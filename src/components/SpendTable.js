@@ -30,7 +30,7 @@ const isNeedUpdate = async () => {
     await updateData(updateList)
   }
 
-  if (newSpends){
+  if (newSpends.length){
     await addData(newSpends);
   }
 }
@@ -196,11 +196,11 @@ const SpendTable = () => {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Name</th>
-              <th>Value</th>
-              <th>Payer</th>
-              <th>Shareholder</th>
-              <th>Per Share</th>
+              <th>Khoản chi</th>
+              <th>Giá tiền</th>
+              <th>Người chi tiền</th>
+              <th>Người hưởng</th>
+              <th>Chia TB</th>
             </tr>
           </thead>
           {/* Data rows */}

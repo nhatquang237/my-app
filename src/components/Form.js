@@ -11,7 +11,7 @@ import {update_object} from '../utils/ArrayUtils';
 class Form extends React.Component {
   constructor(props) {
     const { shareholderNames, lastShareholder, ...restProps } = props;
-    super(restProps);
+    super(props);
     // Initial state may take from the last setting value
     this.shareholderNames = [...shareholderNames];
     this.handleAddNewSpend = restProps.onSubmit;
