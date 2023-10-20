@@ -190,10 +190,10 @@ const SpendTable = () => {
   return (
     <>
       {/* Table of spend */}
-      <div style={{ display: 'flex', marginTop: '20px' }}>
+      <div style={{ display: 'flex', marginTop: '20px'}}>
         <table style={{ height: '100%' }}>
           {/* Label rows */}
-          <thead>
+          <thead style={{position: 'sticky', top: '0px', zIndex: '2'}}>
             <tr>
               <th>ID</th>
               <th>Khoản chi</th>
@@ -237,7 +237,7 @@ const SpendTable = () => {
             ))}
           </tbody>
         </table >
-        <div style={{ height: '100%', marginRight: '20px' }}>
+        <div style={{ height: '100%', marginRight: '20px', position: 'sticky', top: '0px'}}>
           {/* Table of member */}
           <table >
             <thead>
