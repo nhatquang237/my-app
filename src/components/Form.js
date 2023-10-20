@@ -80,7 +80,7 @@ class Form extends React.Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <FormControl>
-          <FormLabel>Add new spend</FormLabel>
+          <FormLabel>Thêm khoản chi tiêu mới</FormLabel>
           <TextField
             required={true}
             value={this.state.name}
@@ -103,7 +103,7 @@ class Form extends React.Component {
           />
           <div style={{ display: 'flex'}}>
             <div style={{ padding: '20px'}}>
-              <FormLabel>Shareholder</FormLabel>
+              <FormLabel>Người tiêu dùng</FormLabel>
               <RadioGroup>
                 {this.shareholderNames.map((name, index) => (
                   <FormControlLabel
@@ -121,7 +121,7 @@ class Form extends React.Component {
               </RadioGroup>
             </div>
             <div style={{ padding: '20px'}}>
-              <FormLabel>Payer</FormLabel>
+              <FormLabel>Người trả tiền</FormLabel>
               <RadioGroup
                 value={this.state.payer}
                 onChange={this.handlePayerChange}
@@ -138,7 +138,7 @@ class Form extends React.Component {
             </div>
           </div>
 
-          <button type="submit">Add</button>
+          <button type="submit">Thêm</button>
         </FormControl>
       </form>
     );

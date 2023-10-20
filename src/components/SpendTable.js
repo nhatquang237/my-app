@@ -195,7 +195,7 @@ const SpendTable = () => {
           {/* Label rows */}
           <thead style={{position: 'sticky', top: '0px', zIndex: '2'}}>
             <tr>
-              <th>ID</th>
+              <th>STT</th>
               <th>Khoản chi</th>
               <th>Giá tiền</th>
               <th>Người chi tiền</th>
@@ -242,11 +242,11 @@ const SpendTable = () => {
           <table >
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Paid</th>
-                <th>Spending</th>
-                <th>Remaining</th>
+                <th>STT</th>
+                <th>Tên</th>
+                <th>Đã chi</th>
+                <th>Đã tiêu</th>
+                <th>Còn dư lại</th>
               </tr>
             </thead>
             <tbody>
