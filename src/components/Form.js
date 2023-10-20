@@ -45,7 +45,8 @@ class Form extends React.Component {
   handleShareholderChange = (e) => {
     // Get the name
     const name = e.target.name;
-    let shareholder = this.state.shareholder;
+    let shareholder = [...this.state.shareholder];
+
     if (shareholder.includes(name)){
       let index = shareholder.indexOf(name)
       if (shareholder.length > 1 ){
@@ -60,8 +61,7 @@ class Form extends React.Component {
 
   validateData = () =>{
     let data = this.state;
-    if(data.name && data.payer && data.shareholder && data.value){
-      console.log('Valid data');
+    if(data.name && data.payer && data.shareholder.length && data.value){
       return true
     }
     return false
@@ -70,9 +70,8 @@ class Form extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();
     if(this.validateData()){
-      this.handleAddNewSpend(this.state)
+      this.handleAddNewSpend({...this.state})
       this.resetState()
-      console.log(this.state)
     }
     // Handle form submission here, e.g., send data to an API or perform validation
   };
