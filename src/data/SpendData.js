@@ -6,12 +6,25 @@ import Member from './Member';
 const url = 'http://localhost:3001/data'
 const updateUrl = 'http://localhost:3001/update'
 const addUrl = 'http://localhost:3001/add'
+const deleteUrl = 'http://localhost:3001/delete'
 
 // Function to get data from backend server to show in UI
 async function getData() {
   try {
     // Send a GET request to the backend
     const response = await axios.get(url);
+    return response.data
+  } catch (error) {
+    throw error; // Re-throw the error to handle it elsewhere if needed
+  }
+}
+
+// Function to send deleted data back to backend to delete accordingly documents in database
+export async function deleteData(deletedData) {
+  try {
+    // Send a GET request to the backend
+    const ids = deletedData.map(data => data.id)
+    const response = await axios.delete(deleteUrl, {data: {ids: ids}});
     return response.data
   } catch (error) {
     throw error; // Re-throw the error to handle it elsewhere if needed

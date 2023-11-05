@@ -7,7 +7,7 @@ import ValueFieldInput from './NumberField.js';
 import Form from './Form.js';
 import Spend from '../data/Spend';
 
-import {addData, data, updateData} from '../data/SpendData.js';
+import {addData, data, updateData, deleteData} from '../data/SpendData.js';
 import {numberWithCommas} from '../utils/StringUtils.js';
 import {update_list} from '../utils/ArrayUtils.js';
 
@@ -27,8 +27,11 @@ const isShare = (checkName, spendIndex) => {
 const isNeedUpdate = async () => {
   let updateList = spends.filter(spend => spend.isChanged());
   if (updateList.length){
-    await updateData(updateList)
+    await updateData(updateList);
   }
+  // if (deleteList.length){
+  //   await deleteData(deleteList);
+  // }
 
   if (newSpends.length){
     await addData(newSpends);
