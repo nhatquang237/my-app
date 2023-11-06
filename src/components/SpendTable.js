@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import ShareholderButton from './ShareholderButton.js';
+import DeleteButton from './DeleteButton.js';
 import PayerList from './PayerList.js';
 import TextFieldInput from './TextField.js';
 import ValueFieldInput from './NumberField.js';
@@ -9,7 +10,7 @@ import Spend from '../data/Spend';
 
 import {addData, data, updateData, deleteData} from '../data/SpendData.js';
 import {numberWithCommas} from '../utils/StringUtils.js';
-import {update_list} from '../utils/ArrayUtils.js';
+import {update_list, deleteItemAtIndex} from '../utils/ArrayUtils.js';
 
 // data got from server Node.js
 const shareholderName = data.shareholderData.names;
@@ -17,6 +18,7 @@ let spends = data.spends;
 let rawMembers = data.members;
 
 let newSpends = [];
+let deletedSpends = [];
 
 // Function to check if a name is in shareholder array of a spend
 const isShare = (checkName, spendIndex) => {
@@ -25,13 +27,16 @@ const isShare = (checkName, spendIndex) => {
 
 // Function to check if we need to update database
 const isNeedUpdate = async () => {
-  let updateList = spends.filter(spend => spend.isChanged());
+  let updateList = spends.filter(spend => spend.isChanged() && !deletedSpends.includes(spend));
+  newSpends = newSpends.filter(spend => !deletedSpends.includes(spend));
+
+  if (deletedSpends.length){
+    await deleteData(deletedSpends);
+  }
+
   if (updateList.length){
     await updateData(updateList);
   }
-  // if (deleteList.length){
-  //   await deleteData(deleteList);
-  // }
 
   if (newSpends.length){
     await addData(newSpends);
@@ -189,6 +194,36 @@ const SpendTable = () => {
     setMembers(update_list(members))
   }
 
+
+  // Function to delete a spend from Form data
+  const handleDeleteSpend = (deleteIndex) => {
+
+    // Get Spend object form delete_index
+    let spend = allSpend[deleteIndex]
+
+    // Add spend object to deleted list to update in database
+    deletedSpends.push(spend)
+
+    // Update the state of allSpend for rendering the Spend table
+    setAllSpend(deleteItemAtIndex(allSpend, deleteIndex))
+
+    // Update the member table
+    // For Member object: Update SpendingList, PaidList
+    members.forEach(member => {
+      if(member.name === spend.payer){
+        member.removeFromPaidList(spend.name)
+        member.updateAmountSpent(-spend.value)
+      }
+      if(spend.shareholder.includes(member.name)){
+        member.removeFromSpendingList(spend.name)
+        member.updateSpending(-spend.perShare)
+      }
+    });
+
+    setMembers(update_list(members))
+  }
+
+
   // Block of code for render React components: Should not include any logic
   return (
     <>
@@ -204,6 +239,7 @@ const SpendTable = () => {
               <th>Người chi tiền</th>
               <th>Người hưởng</th>
               <th>Chia TB</th>
+              <th>Xóa</th>
             </tr>
           </thead>
           {/* Data rows */}
@@ -226,7 +262,7 @@ const SpendTable = () => {
                 <td>
                   {shareholderName.map((name, shareIndex) => (
                     <ShareholderButton
-                      key={'btn_' +shareIndex}
+                      key={'btn_' + shareIndex}
                       isShare={isShare(name, index)}
                       onClick={() => handleShareholderClick(name, index)}>
                       {name}
@@ -236,6 +272,12 @@ const SpendTable = () => {
 
                 {/* Value per person-Formated in currency format */}
                 <td className="numeric">{numberWithCommas(spend.perShare)}</td>
+                <td>
+                  <DeleteButton
+                    key={'DelBtn_' + index}
+                    onClick={() => handleDeleteSpend(index)}>
+                  </DeleteButton>
+                </td>
               </tr>
             ))}
           </tbody>

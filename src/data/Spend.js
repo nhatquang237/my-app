@@ -91,6 +91,10 @@ class Spend {
 
   // Function to check if object is change
   isChanged = () => {
+    // New Spend object dont have id value initiate. Only the Spend object load from database have it
+    if (!this.id) {
+      return false
+    }
     const currentHash = this.createHashString()
     if (currentHash === this.hash){
       return false
