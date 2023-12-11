@@ -2,8 +2,6 @@ import React from 'react';
 import { FormControl, FormControlLabel, Checkbox, FormLabel, RadioGroup, Radio } from '@mui/material';
 import TextField from '@mui/material/TextField';
 
-// import TextFieldInput from './TextField.js';
-
 import '../styles/Form.css';
 
 import {update_object} from '../utils/ArrayUtils';
