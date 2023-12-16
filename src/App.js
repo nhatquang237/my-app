@@ -1,8 +1,11 @@
 import { Routes, Route } from "react-router-dom";
-import './App.css';
 import SpendTable from './components/SpendTable';
+
 import Login from './Login'
+import SignUp from "./Register";
 import Navbar from "./components/Navbar";
+
+import './App.css';
 
 function App() {
   return (
@@ -11,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<SpendTable />}/>
         <Route path="/login" element={<Login />}/>
+        <Route path="/register" element={<SignUp />}/>
       </Routes>
     </div>
 

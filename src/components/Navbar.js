@@ -3,13 +3,10 @@ import { Link, useMatch, useResolvedPath } from "react-router-dom"
 export default function Navbar() {
   return (
     <nav className="nav">
-      <Link to="/" className="site-title">
-        Site Name
-      </Link>
       <ul>
-        <CustomLink to="/">Home</CustomLink>
-        <CustomLink to="/login">Login</CustomLink>
-        <CustomLink to="/register">Register</CustomLink>
+        <CustomLink to="/">Trang chủ</CustomLink>
+        <CustomLink to="/login">Đăng nhập</CustomLink>
+        <CustomLink to="/register">Đăng ký</CustomLink>
       </ul>
     </nav>
   )

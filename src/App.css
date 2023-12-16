@@ -85,10 +85,6 @@ tr:hover {
   padding: 0 1rem;
 }
 
-.site-title {
-  font-size: 2rem;
-}
-
 .nav ul {
   padding: 0;
   margin: 0;
@@ -107,9 +103,9 @@ tr:hover {
 }
 
 .nav li.active {
-  background-color: #555;
+  background-color: #b2dbe6;
 }
 
 .nav li:hover {
-  background-color: #777;
+  background-color: #b2dbe6;
 }

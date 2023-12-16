@@ -2,12 +2,12 @@
 
 // Function to turn a number into currency format: For better presentation format
 export const toCurrencyFormat = (value) => {
-let currencyFormat = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'VND',
-    maximumSignificantDigits: 4,
-});
-return currencyFormat.format(value)
+    let currencyFormat = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'VND',
+        maximumSignificantDigits: 4,
+    });
+    return currencyFormat.format(value)
 }
 
 /**
@@ -16,8 +16,17 @@ return currencyFormat.format(value)
  */
 export const numberWithCommas = (value) => {
 
-    return value.toLocaleString(undefined, {maximumFractionDigits: 0});
+    return value.toLocaleString(undefined, { maximumFractionDigits: 0 });
 }
 // export const numberWithCommas = (value) => {
 //     return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 // }
+
+
+export function validateEmail(email) {
+    // Regular expression for a basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Test the email against the regular expression
+    return emailRegex.test(email);
+}
