@@ -22,7 +22,7 @@ const defaultTheme = createTheme();
 
 export default function Login() {
   const navigate = useNavigate();
-  
+
   const handleSubmit = async (event) => {
     // To prevent default behavior of a form submition is reload the page
     event.preventDefault();
@@ -32,7 +32,7 @@ export default function Login() {
     const email = data.get("email");
     const password = data.get("password");
 
-    const user = new User({'email': email, 'password': password});
+    const user = new User({ 'email': email, 'password': password });
     const response = await getUser(user);
     const token = response?.data?.token;
 

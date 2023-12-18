@@ -13,7 +13,7 @@ import { useState } from 'react';
 
 import User from './data/User.js';
 import Copyright from './components/Copyright';
-import {validateEmail} from './utils/StringUtils.js';
+import { validateEmail } from './utils/StringUtils.js';
 import { addUser, checkEmail } from './data/UserData.js';
 
 
@@ -28,7 +28,7 @@ export default function SignUp() {
     const entered_email = data.get('email');
 
     // Validate entered value of email
-    if(!validateEmail(entered_email)){
+    if (!validateEmail(entered_email)) {
       setError('Please enter valid email address');
       return
     }
@@ -36,18 +36,18 @@ export default function SignUp() {
     // Check if email was exist in database
     const check_response = await checkEmail(entered_email);
     const is_exist = check_response;
-    if (is_exist){
+    if (is_exist) {
       setError('Email already exist.')
       return
     }
 
     // Create a new User
-    const newUser = new User({'email': entered_email, 'password': data.get('password')});
+    const newUser = new User({ 'email': entered_email, 'password': data.get('password') });
     try {
       await addUser(newUser)
       setError('');
     }
-    catch (error){
+    catch (error) {
       setError(error);
     }
   };

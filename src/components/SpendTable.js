@@ -8,9 +8,9 @@ import ValueFieldInput from './NumberField.js';
 import Form from './Form.js';
 import Spend from '../data/Spend';
 
-import {addData, data, updateData, deleteData} from '../data/SpendData.js';
-import {numberWithCommas} from '../utils/StringUtils.js';
-import {update_list, deleteItemAtIndex} from '../utils/ArrayUtils.js';
+import { addData, data, updateData, deleteData } from '../data/SpendData.js';
+import { numberWithCommas } from '../utils/StringUtils.js';
+import { update_list, deleteItemAtIndex } from '../utils/ArrayUtils.js';
 
 // data got from server Node.js
 const shareholderName = data.shareholderData.names;
@@ -30,15 +30,15 @@ const isNeedUpdate = async () => {
   let updateList = spends.filter(spend => spend.isChanged() && !deletedSpends.includes(spend));
   newSpends = newSpends.filter(spend => !deletedSpends.includes(spend));
 
-  if (deletedSpends.length){
+  if (deletedSpends.length) {
     await deleteData(deletedSpends);
   }
 
-  if (updateList.length){
+  if (updateList.length) {
     await updateData(updateList);
   }
 
-  if (newSpends.length){
+  if (newSpends.length) {
     await addData(newSpends);
   }
 }
@@ -62,7 +62,7 @@ const SpendTable = () => {
   const [members, setMembers] = useState(rawMembers);
   const [allSpend, setAllSpend] = useState(spends);
 
-    // Event handler for when an option is selected
+  // Event handler for when an option is selected
   const handlePayerChange = (index, newValue, oldValue) => {
     // Update components state
     // setSelectedPayer is not explicitly defined in our component code,
@@ -73,11 +73,11 @@ const SpendTable = () => {
 
     // For Member object: Update SpendingList, PaidList
     members.forEach(member => {
-      if(member.name === oldValue){
+      if (member.name === oldValue) {
         member.updateAmountSpent(- spend.value)
         member.removeFromPaidList(oldValue)
       }
-      if(member.name === newValue){
+      if (member.name === newValue) {
         member.updateAmountSpent(spend.value)
         member.addToPaidList(newValue)
       }
@@ -103,8 +103,8 @@ const SpendTable = () => {
       //=> spending of this member have to be updated in two cases:
       // 1-New member to this spend: Increase the newPerShare
       // 2-Old member: Update with changeAmount (may be increase or decrease)
-      if(spend.shareholder.includes(member.name)){
-        if(member.name === name){
+      if (spend.shareholder.includes(member.name)) {
+        if (member.name === name) {
           member.addToSpendingList(spend.name)
           member.updateSpending(newPerShare)
         } else {
@@ -114,7 +114,7 @@ const SpendTable = () => {
         // => This member was remove from shareholder list:
         // 1-Remove this spend from spendingList of this member
         // 2-Update spending of this member: Decrease oldPerShare
-      } else if(member.name === name){
+      } else if (member.name === name) {
         member.removeFromSpendingList(spend.name)
         member.updateSpending(- oldPerShare)
       }
@@ -131,11 +131,11 @@ const SpendTable = () => {
 
     // For Member object: Update SpendingList, PaidList
     members.forEach(member => {
-      if(spend.payer === member.name){
+      if (spend.payer === member.name) {
         member.addToPaidList(newValue)
         member.removeFromPaidList(oldValue)
       }
-      if(spend.shareholder.includes(member.name)){
+      if (spend.shareholder.includes(member.name)) {
         member.addToSpendingList(newValue)
         member.removeFromSpendingList(oldValue)
       }
@@ -151,10 +151,10 @@ const SpendTable = () => {
 
     // For Member objects that related to that spend
     members.forEach(member => {
-      if(spend.payer === member.name){
+      if (spend.payer === member.name) {
         member.updateAmountSpent(delta)
       }
-      if(spend.shareholder.includes(member.name)){
+      if (spend.shareholder.includes(member.name)) {
         member.updateSpending(delta / spend.shareholder.length)
       }
     });
@@ -181,11 +181,11 @@ const SpendTable = () => {
     // Update the member table
     // For Member object: Update SpendingList, PaidList
     members.forEach(member => {
-      if(member.name === spend.payer){
+      if (member.name === spend.payer) {
         member.addToPaidList(spend.name)
         member.updateAmountSpent(spend.value)
       }
-      if(spend.shareholder.includes(member.name)){
+      if (spend.shareholder.includes(member.name)) {
         member.addToSpendingList(spend.name)
         member.updateSpending(spend.perShare)
       }
@@ -210,11 +210,11 @@ const SpendTable = () => {
     // Update the member table
     // For Member object: Update SpendingList, PaidList
     members.forEach(member => {
-      if(member.name === spend.payer){
+      if (member.name === spend.payer) {
         member.removeFromPaidList(spend.name)
         member.updateAmountSpent(-spend.value)
       }
-      if(spend.shareholder.includes(member.name)){
+      if (spend.shareholder.includes(member.name)) {
         member.removeFromSpendingList(spend.name)
         member.updateSpending(-spend.perShare)
       }
@@ -228,10 +228,10 @@ const SpendTable = () => {
   return (
     <>
       {/* Table of spend */}
-      <div style={{ display: 'flex', marginTop: '20px'}}>
+      <div style={{ display: 'flex', marginTop: '20px' }}>
         <table style={{ height: '100%' }}>
           {/* Label rows */}
-          <thead style={{position: 'sticky', top: '0px', zIndex: '2'}}>
+          <thead style={{ position: 'sticky', top: '0px', zIndex: '2' }}>
             <tr>
               <th>STT</th>
               <th>Khoản chi</th>
@@ -282,7 +282,7 @@ const SpendTable = () => {
             ))}
           </tbody>
         </table >
-        <div style={{ height: '100%', marginRight: '20px', position: 'sticky', top: '0px'}}>
+        <div style={{ height: '100%', marginRight: '20px', position: 'sticky', top: '0px' }}>
           {/* Table of member */}
           <table >
             <thead>
@@ -299,7 +299,7 @@ const SpendTable = () => {
               {members.map((member, index) => (
                 <tr key={'memberTb_' + index}>
                   <td>{index + 1}</td>
-                  <td>{member.name }</td>
+                  <td>{member.name}</td>
                   {/* Implement state for these numbers below */}
                   <td className="numeric">{member.getAmountSpent()}</td>
                   <td className="numeric">{member.getSpending()}</td>
