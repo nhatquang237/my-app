@@ -323,6 +323,3 @@ const SpendTable = () => {
 };
 
 export default SpendTable;
-
-// NOTE for the next development: To night-5/10/2023
-

@@ -143,9 +143,4 @@ class Form extends React.Component {
   }
 }
 
-// const newForm = new Form([{ name: 'Stuff', value: 20, payer: 'Phuc', shareholder: ['Quang', 'Tai', 'Phuc', 'Thanh'] }]);
 export default Form;
-// NOTE: To implement a form to submit new spend to database
-// Wish feature:
-// 1-Form should save last user input
-// 2-Input fields of form will include 4 fields: Name, value, payer, shareholder list (checkbox options)

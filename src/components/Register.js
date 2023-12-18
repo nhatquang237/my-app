@@ -11,10 +11,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
 
-import User from './data/User.js';
-import Copyright from './components/Copyright';
-import { validateEmail } from './utils/StringUtils.js';
-import { addUser, checkEmail } from './data/UserData.js';
+import User from '../data/User.js';
+import Copyright from './Copyright';
+import { validateEmail } from '../utils/StringUtils.js';
+import { addUser, checkEmail } from '../data/UserData.js';
 
 
 const defaultTheme = createTheme();

@@ -14,9 +14,9 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { useNavigate } from "react-router-dom";
 
-import User from './data/User.js';
-import { getUser } from './data/UserData.js';
-import Copyright from './components/Copyright';
+import User from '../data/User.js';
+import { getUser } from '../data/UserData.js';
+import Copyright from './Copyright';
 
 const defaultTheme = createTheme();
 

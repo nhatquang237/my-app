@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 
-import SpendTable from "./components/SpendTable";
-import Login from "./Login"
-import SignUp from "./Register";
+import Login from "./components/Login"
 import Navbar from "./components/Navbar";
+import SignUp from "./components/Register";
+import SpendTable from "./components/SpendTable";
 
 import "./App.css";
 
