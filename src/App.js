@@ -8,21 +8,16 @@ import Navbar from "./components/Navbar";
 import "./App.css";
 
 function App() {
-    return (
-        <div className="App">
-            <Navbar />
-            <Routes>
-                <Route path="/" element={<SpendTable />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<SignUp />} />
-            </Routes>
-        </div>
-        // <Routes>
-        //   <Route path="/" element={<SpendTable />}/>
-        //   <Route path="/login" element={<Login />}/>
-        //   <Route path="/register" element={<SignUp />}/>
-        // </Routes>
-    );
+  return (
+    <div className="App">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<SpendTable />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<SignUp />} />
+      </Routes>
+    </div>
+  );
 }
 
 export default App;
