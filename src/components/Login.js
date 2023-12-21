@@ -17,12 +17,13 @@ import { useNavigate } from "react-router-dom";
 import User from '../data/User.js';
 import { getUser } from '../data/UserData.js';
 import Copyright from './Copyright';
+import useAuth from '../hooks/useAuth.js';
 
 const defaultTheme = createTheme();
 
 export default function Login() {
   const navigate = useNavigate();
-
+  const {setAuth} = useAuth();
   const handleSubmit = async (event) => {
     // To prevent default behavior of a form submition is reload the page
     event.preventDefault();
@@ -39,6 +40,7 @@ export default function Login() {
     if (token) {
       // Save the token to localStorage
       localStorage.setItem('token', token);
+      setAuth({"user": user})
       navigate('/');
     }
   };

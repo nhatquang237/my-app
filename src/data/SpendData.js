@@ -99,3 +99,6 @@ spendData.forEach(initSpend);
 data.spends = spends;
 data.payers = payers;
 data.members = members;
+
+// Note: Move all loading stuff into the state of loading the Spend table
+// to make it protected with login feature

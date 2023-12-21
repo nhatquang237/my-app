@@ -5,6 +5,8 @@ import Navbar from "./components/Navbar";
 import SignUp from "./components/Register";
 import SpendTable from "./components/SpendTable";
 
+import RequireAuth from "./components/RequireAuth";
+import NotRequireAuth from "./components/NotRequireAuth";
 import "./App.css";
 
 function App() {
@@ -12,9 +14,16 @@ function App() {
     <div className="App">
       <Navbar />
       <Routes>
-        <Route path="/" element={<SpendTable />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<SignUp />} />
+
+        <Route element={<RequireAuth />}>
+          <Route path="/" element={<SpendTable />} />
+        </Route>
+
+        <Route element={<NotRequireAuth />}>
+          <Route path="/register" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+        </Route>
+
       </Routes>
     </div>
   );

@@ -48,6 +48,7 @@ const isNeedUpdate = async () => {
 // 2-Close browser
 window.addEventListener('beforeunload', async (event) => {
   // Perform cleanup or show a confirmation message
+  event.stopImmediatePropagation();
   event.preventDefault();
   event.returnValue = '';
   await isNeedUpdate();

@@ -1,12 +1,14 @@
 import { Link, useMatch, useResolvedPath } from "react-router-dom"
+import useAuth from '../hooks/useAuth.js';
 
 export default function Navbar() {
+  const {auth} = useAuth();
   return (
     <nav className="nav">
       <ul>
         <CustomLink to="/">Trang chủ</CustomLink>
-        <CustomLink to="/login">Đăng nhập</CustomLink>
-        <CustomLink to="/register">Đăng ký</CustomLink>
+        {!auth.user && <CustomLink to="/login">Đăng nhập</CustomLink>}
+        {!auth.user && <CustomLink to="/register">Đăng ký</CustomLink>}
       </ul>
     </nav>
   )
