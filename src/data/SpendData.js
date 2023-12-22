@@ -9,10 +9,11 @@ const addUrl = '/add'
 const deleteUrl = '/delete'
 
 // Function to get data from backend server to show in UI
-async function getData() {
+export async function getData() {
   try {
     const response = await axios.get(url);
-    return response.data
+    const data = prepareData(response.data)
+    return data
   } catch (error) {
     throw error;
   }
@@ -51,54 +52,42 @@ export async function addData(newData) {
   }
 }
 
-export var data = await getData();
 
-var spendData = data.spendData
-var names = data.shareholderData.names
-// Code block to create an array of Spend objects (spends) from spendData and
-// an array of payers (payers)
-let spends = [];
-let payers = [];
-let per_shares = [];
-let members = [];
+function prepareData (rawData) {
+  var spendData = rawData.spendData
+  const names = rawData.shareholderData.names
+  let payers = [];
+  let per_shares = [];
+  const initMember = (name) => new Member(name);
+  let members = names.map(initMember);
 
-// Init Member objects base on data from database
-function initMember (name) {
-  // Collect payer data
-  let member = new Member(name);
-  members.push(member);
+  const initSpend = (input_data) => {
+    // Collect payer data
+    payers.push(input_data.payer);
+
+    let spend = new Spend(input_data);
+
+    per_shares.push(spend.perShare);
+    members.forEach((member) => {
+
+      // If member is in the shareholder list => update per_share value of this spend as spending of this member
+      if(spend.isHaveToPay(member.name)){
+        member.updateSpending(spend.perShare);
+      };
+
+      // If member is payer => update the value of spend as amount spent of this member
+      if(spend.payer === member.name){
+        member.updateAmountSpent(spend.value);
+      };
+    });
+    return spend;
+  }
+  let spends = spendData.map(initSpend);
+  let cookData = {"members": members, "payers": payers, "spends": spends};
+
+  return Object.assign(rawData, cookData);
 }
-names.forEach(initMember);
 
-// Init Spend objects base on data from database
-function initSpend (input_data) {
-  // Collect payer data
-  payers.push(input_data.payer);
-
-  // Collect spend data
-  let spend = new Spend(input_data);
-  spends.push(spend);
-  per_shares.push(spend.perShare);
-
-  members.forEach((member) => {
-
-    // If member is in the shareholder list => update per_share value of this spend as spending of this member
-    if(spend.isHaveToPay(member.name)){
-      member.updateSpending(spend.perShare);
-    };
-
-    // If member is payer => update the value of spend as amount spent of this member
-    if(spend.payer === member.name){
-      member.updateAmountSpent(spend.value);
-    };
-  });
-}
-spendData.forEach(initSpend);
-
-// Add generated data to data object
-data.spends = spends;
-data.payers = payers;
-data.members = members;
 
 // Note: Move all loading stuff into the state of loading the Spend table
 // to make it protected with login feature

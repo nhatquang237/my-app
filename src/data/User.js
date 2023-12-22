@@ -3,7 +3,7 @@
 class User {
   constructor(params) {
     // Email
-    this.email = params.email;
+    this.username = params.username;
 
     // Password
     this.password = params.password;

@@ -8,11 +8,12 @@ import ValueFieldInput from './NumberField.js';
 import Form from './Form.js';
 import Spend from '../data/Spend';
 
-import { addData, data, updateData, deleteData } from '../data/SpendData.js';
+import { addData, getData, updateData, deleteData } from '../data/SpendData.js';
 import { numberWithCommas } from '../utils/StringUtils.js';
 import { update_list, deleteItemAtIndex } from '../utils/ArrayUtils.js';
 
 // data got from server Node.js
+let data = await getData();
 const shareholderName = data.shareholderData.names;
 let spends = data.spends;
 let rawMembers = data.members;
@@ -58,10 +59,10 @@ window.addEventListener('beforeunload', async (event) => {
 // Code for main component SpendTable
 const SpendTable = () => {
 
-  // The parameter inside useState function is the initialState or initial value of number,
-  // or we can say that is default value
-  const [members, setMembers] = useState(rawMembers);
-  const [allSpend, setAllSpend] = useState(spends);
+    // The parameter inside useState function is the initialState or initial value of number,
+    // or we can say that is default value
+    const [members, setMembers] = useState(rawMembers);
+    const [allSpend, setAllSpend] = useState(spends);
 
   // Event handler for when an option is selected
   const handlePayerChange = (index, newValue, oldValue) => {

@@ -7,8 +7,8 @@ export default function Navbar() {
     <nav className="nav">
       <ul>
         <CustomLink to="/">Trang chủ</CustomLink>
-        {!auth.user && <CustomLink to="/login">Đăng nhập</CustomLink>}
-        {!auth.user && <CustomLink to="/register">Đăng ký</CustomLink>}
+        {!auth.token && <CustomLink to="/login">Đăng nhập</CustomLink>}
+        {!auth.token && <CustomLink to="/register">Đăng ký</CustomLink>}
       </ul>
     </nav>
   )

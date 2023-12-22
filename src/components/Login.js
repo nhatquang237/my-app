@@ -14,7 +14,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { useNavigate } from "react-router-dom";
 
-import User from '../data/User.js';
 import { getUser } from '../data/UserData.js';
 import Copyright from './Copyright';
 import useAuth from '../hooks/useAuth.js';
@@ -30,18 +29,15 @@ export default function Login() {
 
     const data = new FormData(event.currentTarget);
 
-    const email = data.get("email");
-    const password = data.get("password");
-
-    const user = new User({ 'email': email, 'password': password });
-    const response = await getUser(user);
-    const token = response?.data?.token;
+    const response = await getUser(data);
+    const token = response?.data?.access_token;
 
     if (token) {
       // Save the token to localStorage
       localStorage.setItem('token', token);
-      setAuth({"user": user})
+      setAuth({"token": token})
       navigate('/');
+      console.log("Navigated")
     }
   };
 
@@ -70,7 +66,7 @@ export default function Login() {
               fullWidth
               id="email"
               label="Email Address"
-              name="email"
+              name="username"
               autoComplete="email"
               autoFocus
             />
