@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import ShareholderButton from './ShareholderButton.js';
 import DeleteButton from './DeleteButton.js';
@@ -8,61 +8,60 @@ import ValueFieldInput from './NumberField.js';
 import Form from './Form.js';
 import Spend from '../data/Spend';
 
-import { addData, getData, updateData, deleteData } from '../data/SpendData.js';
+import { getData, updateDatabase } from '../data/SpendData.js';
 import { numberWithCommas } from '../utils/StringUtils.js';
 import { update_list, deleteItemAtIndex } from '../utils/ArrayUtils.js';
 
-// data got from server Node.js
-let data = await getData();
-const shareholderName = data.shareholderData.names;
-let spends = data.spends;
-let rawMembers = data.members;
-
-let newSpends = [];
-let deletedSpends = [];
-
 // Function to check if a name is in shareholder array of a spend
-const isShare = (checkName, spendIndex) => {
-  return spends[spendIndex].shareholder.includes(checkName);
+const isShare = (allSpend, checkName, spendIndex) => {
+  return allSpend[spendIndex].shareholder.includes(checkName);
 }
-
-// Function to check if we need to update database
-const isNeedUpdate = async () => {
-  let updateList = spends.filter(spend => spend.isChanged() && !deletedSpends.includes(spend));
-  newSpends = newSpends.filter(spend => !deletedSpends.includes(spend));
-
-  if (deletedSpends.length) {
-    await deleteData(deletedSpends);
-  }
-
-  if (updateList.length) {
-    await updateData(updateList);
-  }
-
-  if (newSpends.length) {
-    await addData(newSpends);
-  }
-}
-
-// Function to call when users exit our site:
-// 1-Close the tab
-// 2-Close browser
-window.addEventListener('beforeunload', async (event) => {
-  // Perform cleanup or show a confirmation message
-  event.stopImmediatePropagation();
-  event.preventDefault();
-  event.returnValue = '';
-  await isNeedUpdate();
-});
-
 
 // Code for main component SpendTable
 const SpendTable = () => {
 
-    // The parameter inside useState function is the initialState or initial value of number,
-    // or we can say that is default value
-    const [members, setMembers] = useState(rawMembers);
-    const [allSpend, setAllSpend] = useState(spends);
+  // The parameter inside useState function is the initialState or initial value of number,
+  // or we can say that is default value
+  const [members, setMembers] = useState([]);
+  const [allSpend, setAllSpend] = useState([]);
+  const [newSpends, setNewSpends] = useState([]);
+  const [deletedSpends, setDeletedSpends] = useState([]);
+  const [shareholderName, setShareHolderName] = useState([]);
+
+  useEffect(() => {
+    // useEffect itself cannot be an async function directly, so we need to define async function inside and call it
+    const fetchData = async () => {
+      try {
+
+        // Perform your async operation, for example, a GET request to a backend API
+        const data = await getData()
+
+        // Update state with the fetched data
+        setMembers(data.members)
+        setAllSpend(data.spends)
+        setShareHolderName(data.shareholderData.names)
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    // Function to call when users exit our site:
+    // 1-Close the tab
+    // 2-Close browser
+    window.addEventListener('beforeunload', async (event) => {
+      // Perform cleanup or show a confirmation message
+      event.stopImmediatePropagation();
+      event.preventDefault();
+      event.returnValue = '';
+      await updateDatabase(allSpend, deletedSpends, newSpends);
+      console.log("addEventListener")
+    });
+
+    // Call the async function
+    fetchData();
+    // eslint-disable-next-line
+    }, []);
 
   // Event handler for when an option is selected
   const handlePayerChange = (index, newValue, oldValue) => {
@@ -143,7 +142,7 @@ const SpendTable = () => {
       }
     });
     setMembers(update_list(members))
-  }
+  };
 
   // Function to update relative variables when value of spend change.
   const handleValueChange = (index, value, delta) => {
@@ -162,8 +161,7 @@ const SpendTable = () => {
     });
     setMembers(update_list(members))
 
-  }
-
+  };
 
   // Function to add new spend from Form data
   const handleAddNewSpend = (newSpend) => {
@@ -176,6 +174,7 @@ const SpendTable = () => {
 
     // Add to new created list for updating to database later
     newSpends.push(spend)
+    setNewSpends(newSpends)
 
     // Update the state of allSpend for rendering the Spend table
     setAllSpend(update_list(allSpend))
@@ -194,8 +193,7 @@ const SpendTable = () => {
     });
 
     setMembers(update_list(members))
-  }
-
+  };
 
   // Function to delete a spend from Form data
   const handleDeleteSpend = (deleteIndex) => {
@@ -205,6 +203,7 @@ const SpendTable = () => {
 
     // Add spend object to deleted list to update in database
     deletedSpends.push(spend)
+    setDeletedSpends(deletedSpends)
 
     // Update the state of allSpend for rendering the Spend table
     setAllSpend(deleteItemAtIndex(allSpend, deleteIndex))
@@ -265,7 +264,7 @@ const SpendTable = () => {
                   {shareholderName.map((name, shareIndex) => (
                     <ShareholderButton
                       key={'btn_' + shareIndex}
-                      isShare={isShare(name, index)}
+                      isShare={isShare(allSpend, name, index)}
                       onClick={() => handleShareholderClick(name, index)}>
                       {name}
                     </ShareholderButton>

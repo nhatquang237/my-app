@@ -34,7 +34,7 @@ export default function Login() {
 
     if (token) {
       // Save the token to localStorage
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
       setAuth({"token": token})
       navigate('/');
       console.log("Navigated")

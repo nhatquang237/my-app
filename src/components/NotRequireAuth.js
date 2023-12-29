@@ -4,7 +4,7 @@ import useAuth from "../hooks/useAuth";
 const NotRequireAuth = () => {
   const { auth } = useAuth();
 
-  if (!auth.token){
+  if (!auth?.token){
     return (<Outlet />)
   }
 }

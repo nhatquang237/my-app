@@ -88,6 +88,22 @@ function prepareData (rawData) {
   return Object.assign(rawData, cookData);
 }
 
+// Function to check if we need to update database
+export async function updateDatabase(spends, deletedSpends, newSpends) {
+  let updateList = spends.filter(spend => spend.isChanged() && !deletedSpends.includes(spend));
+  newSpends = newSpends.filter(spend => !deletedSpends.includes(spend));
 
+  if (deletedSpends.length) {
+    await deleteData(deletedSpends);
+  }
+
+  if (updateList.length) {
+    await updateData(updateList);
+  }
+
+  if (newSpends.length) {
+    await addData(newSpends);
+  }
+}
 // Note: Move all loading stuff into the state of loading the Spend table
 // to make it protected with login feature
