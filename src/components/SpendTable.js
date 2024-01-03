@@ -28,12 +28,20 @@ const SpendTable = () => {
   const [deletedSpends, setDeletedSpends] = useState([]);
   const [shareholderName, setShareHolderName] = useState([]);
 
+  // Function to call when users exit our site:
+  // 1-Close the tab
+  // 2-Close browser
+  window.addEventListener('beforeunload', async (event) => {
+    // Update change from UI to database
+    await updateDatabase(allSpend, deletedSpends, newSpends);
+  });
+
   useEffect(() => {
     // useEffect itself cannot be an async function directly, so we need to define async function inside and call it
     const fetchData = async () => {
       try {
 
-        // Perform your async operation, for example, a GET request to a backend API
+        // Perform async operation to fetch data from a backend API
         const data = await getData()
 
         // Update state with the fetched data
@@ -45,18 +53,6 @@ const SpendTable = () => {
         console.error('Error fetching data:', error);
       }
     };
-
-    // Function to call when users exit our site:
-    // 1-Close the tab
-    // 2-Close browser
-    window.addEventListener('beforeunload', async (event) => {
-      // Perform cleanup or show a confirmation message
-      event.stopImmediatePropagation();
-      event.preventDefault();
-      event.returnValue = '';
-      await updateDatabase(allSpend, deletedSpends, newSpends);
-      console.log("addEventListener")
-    });
 
     // Call the async function
     fetchData();
