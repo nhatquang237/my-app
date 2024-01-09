@@ -23,7 +23,7 @@ export async function getData() {
 export async function deleteData(deletedData) {
   try {
     const ids = deletedData.map(data => data.id)
-    const response = await axios.delete(deleteUrl, {data: {ids: ids}});
+    const response = await axios.patch(deleteUrl, {"ids": ids});
     return response.data
   } catch (error) {
     throw error;

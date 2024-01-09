@@ -18,7 +18,7 @@ export async function addUser(newUser) {
 export async function checkEmail(email) {
   try {
     // Check if email existed in database
-    const response = await axios.post(checkUrl, {'email': email});
+    const response = await axios.post(checkUrl, {'username': email});
     return response.data
   } catch (error) {
     throw error;
