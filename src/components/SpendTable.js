@@ -12,6 +12,29 @@ import { getData, updateDatabase } from '../data/SpendData.js';
 import { numberWithCommas } from '../utils/StringUtils.js';
 import { update_list, deleteItemAtIndex } from '../utils/ArrayUtils.js';
 
+
+let allSpend = []
+let deletedSpends = []
+let newSpends = []
+
+// Function to update global variables
+const updateGlobalVariables = (all, deleted, newS) => {
+  all ? allSpend = all : {}
+  deleted ? deletedSpends = deleted : {}
+  newS ? newSpends = newS : {}
+}
+
+// Function to call when users exit our site:
+// 1-Close the tab
+// 2-Close browser
+window.addEventListener('beforeunload', async (event) => {
+  // Update change from UI to database
+  event.preventDefault();
+  event.returnValue = '';
+  console.log(allSpend, deletedSpends, newSpends)
+  await updateDatabase(allSpend, deletedSpends, newSpends);
+});
+
 // Function to check if a name is in shareholder array of a spend
 const isShare = (allSpend, checkName, spendIndex) => {
   return allSpend[spendIndex].shareholder.includes(checkName);
@@ -27,14 +50,6 @@ const SpendTable = () => {
   const [newSpends, setNewSpends] = useState([]);
   const [deletedSpends, setDeletedSpends] = useState([]);
   const [shareholderName, setShareHolderName] = useState([]);
-
-  // Function to call when users exit our site:
-  // 1-Close the tab
-  // 2-Close browser
-  window.addEventListener('beforeunload', async (event) => {
-    // Update change from UI to database
-    await updateDatabase(allSpend, deletedSpends, newSpends);
-  });
 
   useEffect(() => {
     // useEffect itself cannot be an async function directly, so we need to define async function inside and call it
@@ -138,6 +153,7 @@ const SpendTable = () => {
       }
     });
     setMembers(update_list(members))
+    updateGlobalVariables(allSpend, deletedSpends, newSpends);
   };
 
   // Function to update relative variables when value of spend change.
@@ -156,6 +172,7 @@ const SpendTable = () => {
       }
     });
     setMembers(update_list(members))
+    updateGlobalVariables(allSpend, deletedSpends, newSpends);
 
   };
 
@@ -188,7 +205,8 @@ const SpendTable = () => {
       }
     });
 
-    setMembers(update_list(members))
+    setMembers(update_list(members));
+    updateGlobalVariables(allSpend, deletedSpends, newSpends);
   };
 
   // Function to delete a spend from Form data
@@ -218,6 +236,7 @@ const SpendTable = () => {
     });
 
     setMembers(update_list(members))
+    updateGlobalVariables(allSpend, deletedSpends, newSpends);
   }
 
 
