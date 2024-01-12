@@ -19,9 +19,9 @@ let newSpends = []
 
 // Function to update global variables
 const updateGlobalVariables = (all, deleted, newS) => {
-  all ? allSpend = all : {}
-  deleted ? deletedSpends = deleted : {}
-  newS ? newSpends = newS : {}
+  allSpend = all
+  deletedSpends = deleted
+  newSpends = newS
 }
 
 // Function to call when users exit our site:
@@ -29,9 +29,6 @@ const updateGlobalVariables = (all, deleted, newS) => {
 // 2-Close browser
 window.addEventListener('beforeunload', async (event) => {
   // Update change from UI to database
-  event.preventDefault();
-  event.returnValue = '';
-  console.log(allSpend, deletedSpends, newSpends)
   await updateDatabase(allSpend, deletedSpends, newSpends);
 });
 
@@ -132,6 +129,7 @@ const SpendTable = () => {
       }
     });
     setMembers(update_list(members))
+    updateGlobalVariables(allSpend, deletedSpends, newSpends);
     return true
   };
 
