@@ -4,6 +4,7 @@ import Login from "./components/Login"
 import Navbar from "./components/Navbar";
 import SignUp from "./components/Register";
 import Loading from "./components/Loading";
+import Logout from "./components/Logout";
 
 import RequireAuth from "./components/RequireAuth";
 import NotRequireAuth from "./components/NotRequireAuth";
@@ -17,6 +18,7 @@ function App() {
 
         <Route element={<RequireAuth />}>
           <Route path="/" element={<Loading />} />
+          <Route path="/logout" element={<Logout />} />
         </Route>
 
         <Route element={<NotRequireAuth />}>
