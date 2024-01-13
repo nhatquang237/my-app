@@ -10,17 +10,21 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import User from '../data/User.js';
-import Copyright from './Copyright';
+import VerificationForm from './Verification.js'
 import { validateEmail } from '../utils/StringUtils.js';
-import { addUser, checkEmail } from '../data/UserData.js';
+import { addUser, authenticate, checkEmail } from '../data/UserData.js';
 
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+  const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [passcode, setPasscode] = useState('');
+  const [newUser, setNewUser] = useState();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -42,13 +46,28 @@ export default function SignUp() {
     }
 
     // Create a new User
-    const newUser = new User({ 'email': entered_email, 'password': data.get('password') });
+    const user = new User({ 'username': entered_email, 'password': data.get('password') });
+    setNewUser(user)
+
     try {
-      await addUser(newUser)
+      const code = await authenticate(entered_email);
+      if (code){
+        setPasscode(code)
+      }
       setError('');
     }
     catch (error) {
       setError(error);
+    }
+  };
+
+  // Event handler for verification code submission
+  const submitCode = async (code) => {
+    // Do something with the combined verification code (e.g., send it to a server)
+    console.log('Combined Verification Code:', code);
+    if (code === passcode){
+      await addUser(newUser)
+      navigate('/login');
     }
   };
 
@@ -74,6 +93,7 @@ export default function SignUp() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
+                  disabled={Boolean(passcode)}
                   required
                   fullWidth
                   id="email"
@@ -83,10 +103,8 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-              </Grid>
-              <Grid item xs={12}>
                 <TextField
+                  disabled={Boolean(passcode)}
                   required
                   fullWidth
                   name="password"
@@ -114,7 +132,15 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
+        <Grid item xs={12}>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+        </Grid>
+
+        {/* Code verification */}
+        <VerificationForm
+          submitCode={(code) => submitCode(code)}
+        ></VerificationForm>
+
       </Container>
     </ThemeProvider>
   );

@@ -37,7 +37,6 @@ export default function Login() {
       sessionStorage.setItem('token', token);
       setAuth({"token": token})
       navigate('/');
-      console.log("Navigated")
     }
   };
 

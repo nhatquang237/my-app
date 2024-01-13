@@ -109,3 +109,20 @@ tr:hover {
 .nav li:hover {
   background-color: #b2dbe6;
 }
+
+.verification-code-container {
+  text-align: center;
+}
+
+.verification-code-input {
+  display: flex;
+  justify-content: center;
+}
+
+.verification-code-input input {
+  width: 2.5em;
+  text-align: center;
+  margin: 0 0.5em;
+  font-size: large;
+  font-weight: bold;
+}

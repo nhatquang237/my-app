@@ -6,10 +6,10 @@ export default function Navbar() {
   return (
     <nav className="nav">
       <ul>
-        <CustomLink to="/">Trang chủ</CustomLink>
-        {!auth.token && <CustomLink to="/login">Đăng nhập</CustomLink>}
-        {!auth.token && <CustomLink to="/register">Đăng ký</CustomLink>}
-        {auth.token && <CustomLink to="/logout">Đăng xuất</CustomLink>}
+        <CustomLink to="/">Home</CustomLink>
+        {!auth.token && <CustomLink to="/login">Login</CustomLink>}
+        {!auth.token && <CustomLink to="/register">Sign Up</CustomLink>}
+        {auth.token && <CustomLink to="/logout">Logout</CustomLink>}
       </ul>
     </nav>
   )
