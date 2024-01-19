@@ -3,8 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login"
 import Navbar from "./components/Navbar";
 import SignUp from "./components/Register";
-import Loading from "./components/Loading";
+// import Loading from "./components/Loading";
 import Logout from "./components/Logout";
+import SpendTable from "./components/SpendTable";
 
 import RequireAuth from "./components/RequireAuth";
 import NotRequireAuth from "./components/NotRequireAuth";
@@ -17,7 +18,7 @@ function App() {
       <Routes>
 
         <Route element={<RequireAuth />}>
-          <Route path="/" element={<Loading />} />
+          <Route path="/" element={<SpendTable />} />
           <Route path="/logout" element={<Logout />} />
         </Route>
 

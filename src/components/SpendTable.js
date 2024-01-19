@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 import ShareholderButton from './ShareholderButton.js';
 import DeleteButton from './DeleteButton.js';
@@ -7,11 +8,12 @@ import TextFieldInput from './TextField.js';
 import ValueFieldInput from './NumberField.js';
 import Form from './Form.js';
 import Spend from '../data/Spend';
+import SpendHeader from './SpendHeader.js';
+import MemberHeader from './MemberHeader.js';
 
 import { getData, updateDatabase } from '../data/SpendData.js';
 import { numberWithCommas } from '../utils/StringUtils.js';
 import { update_list, deleteItemAtIndex } from '../utils/ArrayUtils.js';
-
 
 let allSpend = []
 let deletedSpends = []
@@ -43,11 +45,15 @@ const SpendTable = () => {
 
   // The parameter inside useState function is the initialState or initial value of number,
   // or we can say that is default value
+  const spendPerPage = 12;
+
   const [members, setMembers] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
   const [allSpend, setAllSpend] = useState([]);
   const [newSpends, setNewSpends] = useState([]);
   const [deletedSpends, setDeletedSpends] = useState([]);
   const [shareholderName, setShareHolderName] = useState([]);
+  const [showingSpend, setShowingSpend] = useState([]);
 
   useEffect(() => {
     // useEffect itself cannot be an async function directly, so we need to define async function inside and call it
@@ -60,6 +66,7 @@ const SpendTable = () => {
         // Update state with the fetched data
         setMembers(data.members)
         setAllSpend(data.spends)
+        setShowingSpend(data.spends.slice(0, spendPerPage))
         setShareHolderName(data.shareholderData.names)
 
       } catch (error) {
@@ -70,7 +77,7 @@ const SpendTable = () => {
     // Call the async function
     fetchData();
     // eslint-disable-next-line
-    }, []);
+  }, []);
 
   // Event handler for when an option is selected
   const handlePayerChange = (index, newValue, oldValue) => {
@@ -238,91 +245,55 @@ const SpendTable = () => {
     updateGlobalVariables(allSpend, deletedSpends, newSpends);
   }
 
+  const getMoreSpend = () => {
+    if (!(showingSpend.length < allSpend.length)) {
+      setHasMore(false)
+      return
+    }
+    setShowingSpend(allSpend.slice(0, showingSpend.length + spendPerPage))
+  }
 
   // Block of code for render React components: Should not include any logic
   return (
     <>
       {/* Table of spend */}
       <div style={{ display: 'flex', marginTop: '20px' }}>
-        <table style={{ height: '100%' }}>
-          {/* Label rows */}
-          <thead style={{ position: 'sticky', top: '0px', zIndex: '2' }}>
-            <tr>
-              <th>STT</th>
-              <th>Khoản chi</th>
-              <th>Giá tiền</th>
-              <th>Người chi tiền</th>
-              <th>Người hưởng</th>
-              <th>Chia TB</th>
-              <th>Xóa</th>
-            </tr>
-          </thead>
-          {/* Data rows */}
-          <tbody>
-            {/* Loop throught the allSpend, create a row for each data*/}
-            {allSpend.map((spend, index) => (
-              <tr key={'spendTb_' + index}>
-                <td>{index + 1}</td>
+        <InfiniteScroll
+          dataLength={showingSpend.length}
+          next={getMoreSpend}
+          hasMore={hasMore}
+          loader={<p>Loading...</p>}
+          endMessage={<p>You get all of data!</p>}
+        >
+          <table style={{ height: '100%' }}>
+            {/* Table header */}
+            {SpendHeader()}
 
-                {/* Information of spend */}
-                <td key={'textField_' + index}>{TextFieldInput(spend.name, index, handleNameChange)}</td>
+            {/* Spend rows */}
+            <tbody>
 
-                {/* Value of spend: Money */}
-                <td>{ValueFieldInput(spend.value, index, handleValueChange)}</td>
+              {/* Loop throught the allSpend, create a row for each data*/}
+              {showingSpend.map((spend, index) => (
+                spend_row(index, spend)
+              ))}
+            </tbody>
 
-                {/* Payer dropdown list */}
-                <td>{PayerList(index, spend.payer, shareholderName, handlePayerChange)}</td>
+          </table >
+        </InfiniteScroll>
 
-                {/* Toggle buttons for choosing shareholders-whose will share the spend */}
-                <td>
-                  {shareholderName.map((name, shareIndex) => (
-                    <ShareholderButton
-                      key={'btn_' + shareIndex}
-                      isShare={isShare(allSpend, name, index)}
-                      onClick={() => handleShareholderClick(name, index)}>
-                      {name}
-                    </ShareholderButton>
-                  ))}
-                </td>
-
-                {/* Value per person-Formated in currency format */}
-                <td className="numeric">{numberWithCommas(spend.perShare)}</td>
-                <td>
-                  <DeleteButton
-                    key={'DelBtn_' + index}
-                    onClick={() => handleDeleteSpend(index)}>
-                  </DeleteButton>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table >
         <div style={{ height: '100%', marginRight: '20px', position: 'sticky', top: '0px' }}>
+
           {/* Table of member */}
           <table >
-            <thead>
-              <tr>
-                <th>STT</th>
-                <th>Tên</th>
-                <th>Đã chi</th>
-                <th>Đã tiêu</th>
-                <th>Còn dư lại</th>
-              </tr>
-            </thead>
+            {MemberHeader()}
             <tbody>
               {/* Loop throught the member, create a row for each member*/}
               {members.map((member, index) => (
-                <tr key={'memberTb_' + index}>
-                  <td>{index + 1}</td>
-                  <td>{member.name}</td>
-                  {/* Implement state for these numbers below */}
-                  <td className="numeric">{member.getAmountSpent()}</td>
-                  <td className="numeric">{member.getSpending()}</td>
-                  <td className="numeric">{member.getRemaining()}</td>
-                </tr>
+                member_row(index, member)
               ))}
             </tbody>
           </table>
+
           {/* Form for adding spend */}
           <div className='divWithBorder'>
             <Form
@@ -331,10 +302,60 @@ const SpendTable = () => {
               onSubmit={handleAddNewSpend}>
             </Form>
           </div>
+
         </div>
       </div>
     </>
   );
+
+  function member_row(index, member) {
+    return <tr key={'memberTb_' + index}>
+      <td>{index + 1}</td>
+      <td>{member.name}</td>
+      {/* Implement state for these numbers below */}
+      <td className="numeric">{member.getAmountSpent()}</td>
+      <td className="numeric">{member.getSpending()}</td>
+      <td className="numeric">{member.getRemaining()}</td>
+    </tr>;
+  }
+
+  function spend_row(index, spend) {
+    return <tr key={'spendTb_' + index}>
+      <td>{index + 1}</td>
+
+      {/* Information of spend */}
+      <td key={'textField_' + index}>{TextFieldInput(spend.name, index, handleNameChange)}</td>
+
+      {/* Value of spend: Money */}
+      <td>{ValueFieldInput(spend.value, index, handleValueChange)}</td>
+
+      {/* Payer dropdown list */}
+      <td>{PayerList(index, spend.payer, shareholderName, handlePayerChange)}</td>
+
+      {/* Toggle buttons for choosing shareholders-whose will share the spend */}
+      <td>
+        {shareholderName.map((name, shareIndex) => (
+          <ShareholderButton
+            key={'btn_' + shareIndex}
+            isShare={isShare(allSpend, name, index)}
+            onClick={() => handleShareholderClick(name, index)}>
+            {name}
+          </ShareholderButton>
+        ))}
+      </td>
+
+      {/* Value per person-Formated in currency format */}
+      <td className="numeric">{numberWithCommas(spend.perShare)}</td>
+      <td>
+        <DeleteButton
+          key={'DelBtn_' + index}
+          onClick={() => handleDeleteSpend(index)}>
+        </DeleteButton>
+      </td>
+    </tr>;
+  }
+
+
 };
 
 export default SpendTable;
