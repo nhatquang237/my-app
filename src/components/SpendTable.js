@@ -29,6 +29,7 @@ const updateGlobalVariables = (all, deleted, newS) => {
 // 2-Close browser
 window.addEventListener('beforeunload', async (event) => {
   // Update change from UI to database
+  event.preventDefault();
   await updateDatabase(allSpend, deletedSpends, newSpends);
 });
 

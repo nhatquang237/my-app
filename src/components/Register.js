@@ -51,7 +51,7 @@ export default function SignUp() {
 
     try {
       const code = await authenticate(entered_email);
-      if (code){
+      if (code) {
         setPasscode(code)
       }
       setError('');
@@ -65,7 +65,7 @@ export default function SignUp() {
   const submitCode = async (code) => {
     // Do something with the combined verification code (e.g., send it to a server)
     console.log('Combined Verification Code:', code);
-    if (code === passcode){
+    if (code === passcode) {
       await addUser(newUser)
       navigate('/login');
     }
@@ -116,6 +116,7 @@ export default function SignUp() {
               </Grid>
             </Grid>
             <Button
+              disabled={Boolean(passcode)}
               type="submit"
               fullWidth
               variant="contained"
@@ -124,11 +125,13 @@ export default function SignUp() {
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="/login" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
+              {!passcode &&
+                <Grid item>
+                  <Link href="/login" variant="body2">
+                    Already have an account? Sign in
+                  </Link>
+                </Grid>
+              }
             </Grid>
           </Box>
         </Box>
@@ -137,9 +140,11 @@ export default function SignUp() {
         </Grid>
 
         {/* Code verification */}
-        <VerificationForm
-          submitCode={(code) => submitCode(code)}
-        ></VerificationForm>
+        {passcode &&
+          <VerificationForm
+            submitCode={(code) => submitCode(code)}
+          ></VerificationForm>
+        }
 
       </Container>
     </ThemeProvider>

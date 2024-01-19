@@ -82,6 +82,7 @@ const VerificationForm = ({submitCode}) => {
         onCodeChange={(code) => setCombinedCode(code)}
       />
       <Button
+        disabled={combinedCode.length !== 6}
         onClick={onSubmitButton}
         fullWidth
         variant="contained"
