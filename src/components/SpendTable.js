@@ -66,7 +66,7 @@ const SpendTable = () => {
         // Update state with the fetched data
         setMembers(data.members)
         setAllSpend(data.spends)
-        setShowingSpend(data.spends.slice(0, spendPerPage))
+        setShowingSpend(data.spends.slice(0, Math.min(spendPerPage, data.spends.length)))
         setShareHolderName(data.shareholderData.names)
 
       } catch (error) {
@@ -227,6 +227,7 @@ const SpendTable = () => {
 
     // Update the state of allSpend for rendering the Spend table
     setAllSpend(deleteItemAtIndex(allSpend, deleteIndex))
+    setShowingSpend(allSpend.slice(0, showingSpend.length))
 
     // Update the member table
     // For Member object: Update SpendingList, PaidList
