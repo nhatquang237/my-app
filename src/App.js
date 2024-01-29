@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login"
 import Navbar from "./components/Navbar";
 import SignUp from "./components/Register";
-// import Loading from "./components/Loading";
 import Logout from "./components/Logout";
 import SpendTable from "./components/SpendTable";
 

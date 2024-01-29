@@ -253,60 +253,6 @@ const SpendTable = () => {
     setShowingSpend(allSpend.slice(0, showingSpend.length + spendPerPage))
   }
 
-  // Block of code for render React components: Should not include any logic
-  return (
-    <>
-      {/* Table of spend */}
-      <div style={{ display: 'flex', marginTop: '20px' }}>
-        <InfiniteScroll
-          dataLength={showingSpend.length}
-          next={getMoreSpend}
-          hasMore={hasMore}
-          loader={<p>Loading...</p>}
-          endMessage={<p>You get all of data!</p>}
-        >
-          <table style={{ height: '100%' }}>
-            {/* Table header */}
-            {SpendHeader()}
-
-            {/* Spend rows */}
-            <tbody>
-
-              {/* Loop throught the allSpend, create a row for each data*/}
-              {showingSpend.map((spend, index) => (
-                spend_row(index, spend)
-              ))}
-            </tbody>
-
-          </table >
-        </InfiniteScroll>
-
-        <div style={{ height: '100%', marginRight: '20px', position: 'sticky', top: '0px' }}>
-
-          {/* Table of member */}
-          <table >
-            {MemberHeader()}
-            <tbody>
-              {/* Loop throught the member, create a row for each member*/}
-              {members.map((member, index) => (
-                member_row(index, member)
-              ))}
-            </tbody>
-          </table>
-
-          {/* Form for adding spend */}
-          <div className='divWithBorder'>
-            <Form
-              shareholderNames={[...shareholderName]}
-              lastShareholder={[...shareholderName]}
-              onSubmit={handleAddNewSpend}>
-            </Form>
-          </div>
-
-        </div>
-      </div>
-    </>
-  );
 
   function member_row(index, member) {
     return <tr key={'memberTb_' + index}>
@@ -355,6 +301,59 @@ const SpendTable = () => {
     </tr>;
   }
 
+  // Block of code for render React components: Should not include any logic
+  return (
+    <>
+      {/* Table of spend */}
+      <div style={{ display: 'flex', marginTop: '20px' }}>
+        <InfiniteScroll
+          dataLength={showingSpend.length}
+          next={getMoreSpend}
+          hasMore={hasMore}
+          loader={<p>Loading...</p>}
+          endMessage={<p>You get all of data!</p>}
+        >
+          <table style={{ height: '100%' }}>
+            {/* Table header */}
+            {SpendHeader()}
+
+            {/* Spend rows */}
+            <tbody>
+              {/* Loop throught the allSpend, create a row for each data*/}
+              {showingSpend.map((spend, index) => (
+                spend_row(index, spend)
+              ))}
+            </tbody>
+
+          </table >
+        </InfiniteScroll>
+
+        <div style={{ height: '100%', marginRight: '20px', position: 'sticky', top: '0px' }}>
+
+          {/* Table of member */}
+          <table >
+            {MemberHeader()}
+            <tbody>
+              {/* Loop throught the member, create a row for each member*/}
+              {members.map((member, index) => (
+                member_row(index, member)
+              ))}
+            </tbody>
+          </table>
+
+          {/* Form for adding spend */}
+          <div className='divWithBorder'>
+            <Form
+              shareholderNames={[...shareholderName]}
+              lastShareholder={[...shareholderName]}
+              onSubmit={handleAddNewSpend}>
+            </Form>
+          </div>
+
+        </div>
+      </div>
+    </>
+  );
 
 };
 
