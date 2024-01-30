@@ -15,15 +15,18 @@ import { getData, updateDatabase } from '../data/SpendData.js';
 import { numberWithCommas } from '../utils/StringUtils.js';
 import { update_list, deleteItemAtIndex } from '../utils/ArrayUtils.js';
 
-let allSpend = []
-let deletedSpends = []
-let newSpends = []
+const storeObject = {
+  allSpend: [],
+  deletedSpends: [],
+  newSpends: [],
+  socket: null
+};
 
 // Function to update global variables
 const updateGlobalVariables = (all, deleted, newS) => {
-  allSpend = all
-  deletedSpends = deleted
-  newSpends = newS
+  storeObject.allSpend = all
+  storeObject.deletedSpends = deleted
+  storeObject.newSpends = newS
 }
 
 // Function to call when users exit our site:
@@ -32,7 +35,8 @@ const updateGlobalVariables = (all, deleted, newS) => {
 window.addEventListener('beforeunload', async (event) => {
   // Update change from UI to database
   event.preventDefault();
-  await updateDatabase(allSpend, deletedSpends, newSpends);
+  await updateDatabase(storeObject.allSpend, storeObject.deletedSpends, storeObject.newSpends);
+  await storeObject.socket.close()
 });
 
 // Function to check if a name is in shareholder array of a spend
@@ -46,7 +50,7 @@ const SpendTable = () => {
   // The parameter inside useState function is the initialState or initial value of number,
   // or we can say that is default value
   const spendPerPage = 12;
-
+  console.log('re-render')
   const [members, setMembers] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [allSpend, setAllSpend] = useState([]);
@@ -54,40 +58,63 @@ const SpendTable = () => {
   const [deletedSpends, setDeletedSpends] = useState([]);
   const [shareholderName, setShareHolderName] = useState([]);
   const [showingSpend, setShowingSpend] = useState([]);
+  const [socket, setSocket] = useState();
 
   useEffect(() => {
+
     // useEffect itself cannot be an async function directly, so we need to define async function inside and call it
     const fetchData = async () => {
-      try {
 
-        // Perform async operation to fetch data from a backend API
-        const data = await getData()
+      // Perform async operation to fetch data from a backend API
+      const data = await getData()
 
-        // Update state with the fetched data
-        setMembers(data.members)
-        setAllSpend(data.spends)
-        setShowingSpend(data.spends.slice(0, Math.min(spendPerPage, data.spends.length)))
-        setShareHolderName(data.shareholderData.names)
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      // Update state with the fetched data
+      setMembers(data.members)
+      setAllSpend(data.spends)
+      setShowingSpend(data.spends.slice(0, Math.min(spendPerPage, data.spends.length)))
+      setShareHolderName(data.shareholderData.names)
+      updateGlobalVariables(data.spends, [], [])
     };
 
     // Call the async function
     fetchData();
+
+    const new_socket = new WebSocket(`ws://localhost:3001/ws/${(new Date()).getTime()}`);
+    new_socket.addEventListener("message", handleSocketMessage);
+    storeObject.socket = new_socket;
+    setSocket(new_socket)
+
+    return () => {
+      socket.removeEventListener("message", handleSocketMessage);
+      socket.close()
+    }
     // eslint-disable-next-line
   }, []);
 
+
+  const handleSocketMessage = (event) => {
+    console.log('Socket sent something')
+    const data = JSON.parse(event.data);
+    const { index, newValue, oldValue } = data
+    handlePayerChange(index, newValue, oldValue, false)
+  }
+
   // Event handler for when an option is selected
-  const handlePayerChange = (index, newValue, oldValue) => {
+  const handlePayerChange = (index, newValue, oldValue, runSocket = true) => {
+    console.log(storeObject.allSpend.length)
+    if (runSocket) {
+      const changedData = JSON.stringify({ "index": index, "newValue": newValue, "oldValue": oldValue })
+      socket.send(changedData)
+    }
+
     // Update components state
     // setSelectedPayer is not explicitly defined in our component code,
     // it's provided by React when you call useState, and you can use it to set the value of count as needed
-    let spend = allSpend[index];
+
+    let spend = storeObject.allSpend[index];
+
     // For spend object:
     spend.updatePayer(newValue);
-
     // For Member object: Update SpendingList, PaidList
     members.forEach(member => {
       if (member.name === oldValue) {
