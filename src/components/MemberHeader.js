@@ -1,5 +1,5 @@
 
-export default function MemberHeader() {
+const MemberHeader = () => {
   return (
     <thead>
     <tr>
@@ -12,3 +12,4 @@ export default function MemberHeader() {
   </thead>
   )
 }
+export default MemberHeader;

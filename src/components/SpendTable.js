@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component'
+// import { useNavigate } from "react-router-dom";
 
 import ShareholderButton from './ShareholderButton.js';
 import DeleteButton from './DeleteButton.js';
@@ -10,6 +11,7 @@ import Form from './Form.js';
 import Spend from '../data/Spend';
 import SpendHeader from './SpendHeader.js';
 import MemberHeader from './MemberHeader.js';
+import socketConnect from '../socket.js'
 
 import { getData, updateDatabase } from '../data/SpendData.js';
 import { numberWithCommas } from '../utils/StringUtils.js';
@@ -19,15 +21,11 @@ const storeObject = {
   allSpend: [],
   deletedSpends: [],
   newSpends: [],
+  shareholderName: [],
+  members: [],
   socket: null
 };
 
-// Function to update global variables
-const updateGlobalVariables = (all, deleted, newS) => {
-  storeObject.allSpend = all
-  storeObject.deletedSpends = deleted
-  storeObject.newSpends = newS
-}
 
 // Function to call when users exit our site:
 // 1-Close the tab
@@ -36,7 +34,9 @@ window.addEventListener('beforeunload', async (event) => {
   // Update change from UI to database
   event.preventDefault();
   await updateDatabase(storeObject.allSpend, storeObject.deletedSpends, storeObject.newSpends);
-  await storeObject.socket.close()
+  if (storeObject.socket) {
+    await storeObject.socket.close()
+  }
 });
 
 // Function to check if a name is in shareholder array of a spend
@@ -49,59 +49,71 @@ const SpendTable = () => {
 
   // The parameter inside useState function is the initialState or initial value of number,
   // or we can say that is default value
+  // const navigate = useNavigate();
   const spendPerPage = 12;
-  console.log('re-render')
+
+  const [allSpend, setAllSpend] = useState([]);
   const [members, setMembers] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [allSpend, setAllSpend] = useState([]);
-  const [newSpends, setNewSpends] = useState([]);
-  const [deletedSpends, setDeletedSpends] = useState([]);
-  const [shareholderName, setShareHolderName] = useState([]);
   const [showingSpend, setShowingSpend] = useState([]);
   const [socket, setSocket] = useState();
 
   useEffect(() => {
 
-    // useEffect itself cannot be an async function directly, so we need to define async function inside and call it
-    const fetchData = async () => {
-
-      // Perform async operation to fetch data from a backend API
-      const data = await getData()
-
-      // Update state with the fetched data
-      setMembers(data.members)
-      setAllSpend(data.spends)
-      setShowingSpend(data.spends.slice(0, Math.min(spendPerPage, data.spends.length)))
-      setShareHolderName(data.shareholderData.names)
-      updateGlobalVariables(data.spends, [], [])
-    };
-
     // Call the async function
     fetchData();
 
-    const new_socket = new WebSocket(`ws://localhost:3001/ws/${(new Date()).getTime()}`);
+    // Connect to socket
+    const new_socket = socketConnect();
     new_socket.addEventListener("message", handleSocketMessage);
     storeObject.socket = new_socket;
-    setSocket(new_socket)
+    setSocket(new_socket);
 
     return () => {
-      socket.removeEventListener("message", handleSocketMessage);
-      socket.close()
+      if (socket) {
+        socket.removeEventListener("message", handleSocketMessage);
+        socket.close()
+      }
     }
     // eslint-disable-next-line
   }, []);
 
+  // Function to get spend data from MongoDb database
+  const fetchData = async () => {
 
+    // Perform async operation to fetch data from a backend API
+    const data = await getData()
+    if (data.error) {
+      // navigate("/login");
+      return
+    }
+
+    // Update state with the fetched data
+    storeObject.members = data.members
+    setMembers(data.members)
+
+    storeObject.allSpend = data.spends
+    setAllSpend(data.spends)
+
+    storeObject.shareholderName = data.shareholderData.names
+    setShowingSpend(data.spends.slice(0, Math.min(spendPerPage, data.spends.length)))
+
+  };
+
+  // Event handler for incoming message from socket
   const handleSocketMessage = (event) => {
-    console.log('Socket sent something')
     const data = JSON.parse(event.data);
-    const { index, newValue, oldValue } = data
-    handlePayerChange(index, newValue, oldValue, false)
+    if (data.name){
+      const { name, index } = data
+      handleShareholderClick(name, index, false)
+    } else {
+      const { index, newValue, oldValue } = data
+      handlePayerChange(index, newValue, oldValue, false)
+    }
   }
 
   // Event handler for when an option is selected
   const handlePayerChange = (index, newValue, oldValue, runSocket = true) => {
-    console.log(storeObject.allSpend.length)
     if (runSocket) {
       const changedData = JSON.stringify({ "index": index, "newValue": newValue, "oldValue": oldValue })
       socket.send(changedData)
@@ -127,11 +139,18 @@ const SpendTable = () => {
       }
     });
     setMembers(update_list(members))
+    storeObject.members = members
   };
 
   // Function call when users interact with shareholder buttons. Called in ShareholderButton
-  const handleShareholderClick = (name, index) => {
-    let spend = allSpend[index];
+  const handleShareholderClick = (name, index, runSocket = true) => {
+    if (runSocket) {
+      const changedData = JSON.stringify({ "name": name, "index": index})
+      socket.send(changedData)
+    }
+    console.log(storeObject.allSpend.length, ' length for checking')
+
+    let spend = storeObject.allSpend[index];
     const oldPerShare = spend.perShare;
     // Update to Spend object: Remove or add stakeholder to a spend
     if (!spend.updateShareholder(name)) {
@@ -164,7 +183,8 @@ const SpendTable = () => {
       }
     });
     setMembers(update_list(members))
-    updateGlobalVariables(allSpend, deletedSpends, newSpends);
+    storeObject.members = members
+    storeObject.allSpend = allSpend
     return true
   };
 
@@ -186,7 +206,8 @@ const SpendTable = () => {
       }
     });
     setMembers(update_list(members))
-    updateGlobalVariables(allSpend, deletedSpends, newSpends);
+    storeObject.members = members
+    storeObject.allSpend = allSpend
   };
 
   // Function to update relative variables when value of spend change.
@@ -205,7 +226,8 @@ const SpendTable = () => {
       }
     });
     setMembers(update_list(members))
-    updateGlobalVariables(allSpend, deletedSpends, newSpends);
+    storeObject.members = members
+    storeObject.allSpend = allSpend
 
   };
 
@@ -216,11 +238,7 @@ const SpendTable = () => {
     let spend = new Spend(newSpend)
 
     // Add new object to current list of spend for rendering
-    allSpend.push(spend)
-
-    // Add to new created list for updating to database later
-    newSpends.push(spend)
-    setNewSpends(newSpends)
+    allSpend.unshift(spend)
 
     // Update the state of allSpend for rendering the Spend table
     setAllSpend(update_list(allSpend))
@@ -239,7 +257,13 @@ const SpendTable = () => {
     });
 
     setMembers(update_list(members));
-    updateGlobalVariables(allSpend, deletedSpends, newSpends);
+    storeObject.members = members
+    
+    setShowingSpend(allSpend.slice(0, showingSpend.length))
+    storeObject.allSpend = allSpend
+
+    // Add to new created list for updating to database later
+    storeObject.newSpends.push(spend)
   };
 
   // Function to delete a spend from Form data
@@ -249,12 +273,12 @@ const SpendTable = () => {
     let spend = allSpend[deleteIndex]
 
     // Add spend object to deleted list to update in database
-    deletedSpends.push(spend)
-    setDeletedSpends(deletedSpends)
+    storeObject.deletedSpends.push(spend)
 
     // Update the state of allSpend for rendering the Spend table
-    setAllSpend(deleteItemAtIndex(allSpend, deleteIndex))
-    setShowingSpend(allSpend.slice(0, showingSpend.length))
+    const updatedAllSpend = deleteItemAtIndex(allSpend, deleteIndex)
+    setAllSpend(updatedAllSpend)
+    setShowingSpend(updatedAllSpend.slice(0, showingSpend.length))
 
     // Update the member table
     // For Member object: Update SpendingList, PaidList
@@ -270,7 +294,8 @@ const SpendTable = () => {
     });
 
     setMembers(update_list(members))
-    updateGlobalVariables(allSpend, deletedSpends, newSpends);
+    storeObject.members = members
+    storeObject.allSpend = allSpend
   }
 
   const getMoreSpend = () => {
@@ -304,11 +329,11 @@ const SpendTable = () => {
       <td>{ValueFieldInput(spend.value, index, handleValueChange)}</td>
 
       {/* Payer dropdown list */}
-      <td>{PayerList(index, spend.payer, shareholderName, handlePayerChange)}</td>
+      <td>{PayerList(index, spend.payer, storeObject.shareholderName, handlePayerChange)}</td>
 
       {/* Toggle buttons for choosing shareholders-whose will share the spend */}
       <td>
-        {shareholderName.map((name, shareIndex) => (
+        {storeObject.shareholderName.map((name, shareIndex) => (
           <ShareholderButton
             key={'btn_' + shareIndex}
             isShare={isShare(allSpend, name, index)}
@@ -333,7 +358,7 @@ const SpendTable = () => {
   return (
     <>
       {/* Table of spend */}
-      <div style={{ display: 'flex', marginTop: '20px' }}>
+      <div style={{ display: 'flex', marginTop: '20px', justifyContent: 'center'}}>
         <InfiniteScroll
           dataLength={showingSpend.length}
           next={getMoreSpend}
@@ -343,7 +368,7 @@ const SpendTable = () => {
         >
           <table style={{ height: '100%' }}>
             {/* Table header */}
-            {SpendHeader()}
+            <SpendHeader/>
 
             {/* Spend rows */}
             <tbody>
@@ -356,11 +381,11 @@ const SpendTable = () => {
           </table >
         </InfiniteScroll>
 
-        <div style={{ height: '100%', marginRight: '20px', position: 'sticky', top: '0px' }}>
+        <div style={{ marginLeft: '50px'}}>
 
           {/* Table of member */}
           <table >
-            {MemberHeader()}
+            <MemberHeader/>
             <tbody>
               {/* Loop throught the member, create a row for each member*/}
               {members.map((member, index) => (
@@ -372,8 +397,8 @@ const SpendTable = () => {
           {/* Form for adding spend */}
           <div className='divWithBorder'>
             <Form
-              shareholderNames={[...shareholderName]}
-              lastShareholder={[...shareholderName]}
+              shareholderNames={[...storeObject.shareholderName]}
+              lastShareholder={[...storeObject.shareholderName]}
               onSubmit={handleAddNewSpend}>
             </Form>
           </div>

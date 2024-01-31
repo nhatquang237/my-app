@@ -1,5 +1,5 @@
 
-export default function SpendHeader() {
+const SpendHeader = () => {
   return (
     <thead style={{ position: 'sticky', top: '0px', zIndex: '2' }}>
       <tr>
@@ -14,3 +14,4 @@ export default function SpendHeader() {
     </thead>
   )
 }
+export default SpendHeader;
