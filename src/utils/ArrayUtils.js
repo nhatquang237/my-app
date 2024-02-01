@@ -13,12 +13,9 @@ return updatedList
 }
 
 // Function use for updating state of components that have state value equal to an object.
-export const update_object = (originalObject, updatedValue, updatedProp) => {
+export const update_object = (originalObject, updatedValue) => {
   // Create a copy of the form state object
-  const updatedObject = { ...originalObject };
-
-  // Update the specific property in the copied object
-  updatedObject[updatedProp] = updatedValue;
+  const updatedObject = { ...originalObject, ...updatedValue };
 
   return updatedObject
 }

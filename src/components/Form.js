@@ -14,17 +14,17 @@ const Form = ({ shareholderNames, lastShareholder, onSubmit }) => {
 
   const handleNameChange = (e) => {
     const name = e.target.value;
-    setState(update_object(state, name, 'name'));
+    setState(update_object(state, {'name': name}));
   };
 
   const handleSpendValueChange = (e) => {
     const spendValue = e.target.value;
-    setState(update_object(state, spendValue, 'value'));
+    setState(update_object(state, {'value': spendValue}));
   };
 
   const handlePayerChange = (e) => {
     const payer = e.target.value;
-    setState(update_object(state, payer, 'payer'));
+    setState(update_object(state, {'payer': payer}));
   };
 
   const handleShareholderChange = (e) => {
@@ -40,7 +40,7 @@ const Form = ({ shareholderNames, lastShareholder, onSubmit }) => {
       shareholder.push(name);
     }
 
-    setState(update_object(state, shareholder, 'shareholder'));
+    setState(update_object(state, {'shareholder': shareholder}));
   };
 
   const validateData = () => {
