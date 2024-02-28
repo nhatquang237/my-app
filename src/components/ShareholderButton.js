@@ -22,12 +22,12 @@ function ShareholderButton(props) {
   // Have a look at below link to get more
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
 
-  const { variant, color, isShare,...restProps } = props;
+  const { variant, color, isShare, id, ...restProps } = props;
 
   const [share, setShare] = useState(isShare);
 
-  const onClickHandle = () => {
-    if(restProps.onClick()){
+  const onClickHandle = (event) => {
+    if(restProps.onClick(event)){
       setShare(!share)
     }
   }
@@ -36,6 +36,7 @@ function ShareholderButton(props) {
 
     <ThemeProvider theme={theme}>
       <Button
+        id={id}
         variant="contained"
         color={colorCheck(share)} sx={{ ml: 2 }}
         onClick={onClickHandle}

@@ -15,7 +15,7 @@ export async function getData() {
     const data = prepareData(response.data)
     return data
   } catch (error) {
-    throw error;
+    return {error: error.response.statusText}
   }
 }
 
