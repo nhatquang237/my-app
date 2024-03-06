@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { useNavigate } from "react-router-dom";
 
 import ShareholderButton from './ShareholderButton.js';
 import DeleteButton from './DeleteButton.js';
@@ -49,7 +50,7 @@ const SpendTable = () => {
 
   // The parameter inside useState function is the initialState or initial value of number,
   // or we can say that is default value
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const spendPerPage = 12;
   const [hasMore, setHasMore] = useState(true);
   const [socket, setSocket] = useState();
@@ -89,7 +90,7 @@ const SpendTable = () => {
     // Perform async operation to fetch data from a backend API
     const data = await getData()
     if (data.error) {
-      // navigate("/login");
+      navigate("/logout");
       return
     }
 
@@ -316,10 +317,13 @@ const SpendTable = () => {
       }
     });
 
+    storeObject.showingSize -= 1
+
     setTableState(update_object(
       tableState, {
       'members': storeObject.members,
       'allSpend': updatedAllSpend,
+      'showingSize': storeObject.showingSize
     }))
 
   }
