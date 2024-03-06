@@ -1,10 +1,8 @@
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -13,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
 
 import { getUser } from '../data/UserData.js';
 import Copyright from './Copyright';
@@ -22,22 +21,28 @@ const defaultTheme = createTheme();
 
 export default function Login() {
   const navigate = useNavigate();
-  const {setAuth} = useAuth();
+  const { setAuth } = useAuth();
+  const [loginError, setLoginError] = useState('');
+
   const handleSubmit = async (event) => {
     // To prevent default behavior of a form submition is reload the page
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
 
-    const response = await getUser(data);
-    const token = response?.data?.access_token;
+    try {
+      const response = await getUser(data);
+      const token = response.data.access_token;
 
-    if (token) {
       // Save the token to localStorage
       sessionStorage.setItem('token', token);
-      setAuth({"token": token})
+      setAuth({ "token": token })
       navigate('/');
+
+    } catch (error) {
+      setLoginError(`${error.response.statusText}: ${error.response.data.detail}`)
     }
+
   };
 
   return (
@@ -55,10 +60,9 @@ export default function Login() {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Typography component="h1" variant="h5">Login</Typography>
+
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -67,7 +71,7 @@ export default function Login() {
               label="Email Address"
               name="username"
               autoComplete="email"
-              autoFocus
+              // autoFocus
             />
             <TextField
               margin="normal"
@@ -79,17 +83,16 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            <Grid item xs={12}>
+              {loginError && <p style={{ color: 'red' }}>{loginError}</p>}
+            </Grid>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Login
             </Button>
             <Grid container>
               <Grid item xs>

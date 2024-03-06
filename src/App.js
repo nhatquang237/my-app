@@ -8,6 +8,7 @@ import SpendTable from "./components/SpendTable";
 
 import RequireAuth from "./components/RequireAuth";
 import NotRequireAuth from "./components/NotRequireAuth";
+import Copyright from "./components/Copyright";
 import "./App.css";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route element={<NotRequireAuth />}>
           <Route path="/register" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/test" element={<Copyright />} />
         </Route>
 
       </Routes>

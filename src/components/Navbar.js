@@ -7,6 +7,7 @@ export default function Navbar() {
     <nav className="nav">
       <ul>
         <CustomLink to="/">Home</CustomLink>
+        <CustomLink to="/test">Test</CustomLink>
         {!auth.token && <CustomLink to="/login">Login</CustomLink>}
         {!auth.token && <CustomLink to="/register">Sign Up</CustomLink>}
         {auth.token && <CustomLink to="/logout">Logout</CustomLink>}
