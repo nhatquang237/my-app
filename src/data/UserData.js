@@ -1,6 +1,6 @@
 import axios from '../api/axios'
 
-const registerUrl = '/register'
+const signUpUrl = '/signup'
 const checkUrl = '/verification'
 const loginUrl = '/login'
 const authenticateUrl = '/authenticate'
@@ -8,7 +8,7 @@ const authenticateUrl = '/authenticate'
 // Function to send updated data back to backend to save in database
 export async function addUser(newUser) {
   try {
-    const response = await axios.post(registerUrl, newUser);
+    const response = await axios.post(signUpUrl, newUser);
     return response
   } catch (error) {
     throw error;

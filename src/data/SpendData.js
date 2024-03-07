@@ -3,10 +3,7 @@ import axios from '../api/axios'
 import Spend from './Spend';
 import Member from './Member';
 
-const url = '/data'
-const updateUrl = '/update'
-const addUrl = '/add'
-const deleteUrl = '/delete'
+const url = '/spends'
 
 // Function to get data from backend server to show in UI
 export async function getData() {
@@ -23,7 +20,7 @@ export async function getData() {
 export async function deleteData(deletedData) {
   try {
     const ids = deletedData.map(data => data.id)
-    const response = await axios.patch(deleteUrl, {"ids": ids});
+    const response = await axios.patch(url, {"ids": ids});
     return response.data
   } catch (error) {
     throw error;
@@ -34,7 +31,7 @@ export async function deleteData(deletedData) {
 export async function updateData(updatedData) {
   try {
     // Send a GET request to the backend
-    const response = await axios.put(updateUrl, updatedData);
+    const response = await axios.put(url, updatedData);
     return response.data
   } catch (error) {
     throw error;
@@ -45,7 +42,7 @@ export async function updateData(updatedData) {
 export async function addData(newData) {
   try {
     // Send a GET request to the backend
-    const response = await axios.post(addUrl, newData);
+    const response = await axios.post(url, newData);
     return response.data
   } catch (error) {
     throw error;

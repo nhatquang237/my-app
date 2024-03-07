@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "./components/Login"
 import Navbar from "./components/Navbar";
-import SignUp from "./components/Register";
+import SignUp from "./components/Signup";
 import Logout from "./components/Logout";
 import SpendTable from "./components/SpendTable";
 
@@ -23,7 +23,7 @@ function App() {
         </Route>
 
         <Route element={<NotRequireAuth />}>
-          <Route path="/register" element={<SignUp />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/test" element={<Copyright />} />
         </Route>

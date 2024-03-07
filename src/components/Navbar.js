@@ -9,7 +9,7 @@ export default function Navbar() {
         <CustomLink to="/">Home</CustomLink>
         <CustomLink to="/test">Test</CustomLink>
         {!auth.token && <CustomLink to="/login">Login</CustomLink>}
-        {!auth.token && <CustomLink to="/register">Sign Up</CustomLink>}
+        {!auth.token && <CustomLink to="/signup">Sign Up</CustomLink>}
         {auth.token && <CustomLink to="/logout">Logout</CustomLink>}
       </ul>
     </nav>

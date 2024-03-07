@@ -16,7 +16,7 @@ import User from '../data/User.js';
 import VerificationForm from './Verification.js'
 import { validateEmail } from '../utils/StringUtils.js';
 import { addUser, authenticate, checkEmail } from '../data/UserData.js';
-
+// import GoogleLoginButton from './GoogleLoginButton.js';
 
 const defaultTheme = createTheme();
 
@@ -71,6 +71,16 @@ export default function SignUp() {
     }
   };
 
+  const handleSuccess = (response) => {
+    console.log('Login successful:', response);
+    // Handle successful login here (e.g., set user state, redirect, etc.)
+  };
+
+  const handleFailure = (error) => {
+    console.error('Login failed:', error);
+    // Handle failed login here
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -99,7 +109,7 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  // autoFocus
+                // autoFocus
                 />
               </Grid>
               <Grid item xs={12}>
@@ -147,6 +157,10 @@ export default function SignUp() {
         }
 
       </Container>
+      {/* <Container>
+        <h1>Sign in with Google</h1>
+        <GoogleLoginButton onSuccess={handleSuccess} onFailure={handleFailure} />
+      </Container> */}
     </ThemeProvider>
   );
 }
