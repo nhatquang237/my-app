@@ -12,7 +12,6 @@ const Logout = () => {
     sessionStorage.removeItem("token");
   }, []);
 
-
   return (<Navigate to="/login" state={{ from: location }} replace />);
 }
 export default Logout;

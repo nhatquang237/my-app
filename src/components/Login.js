@@ -14,7 +14,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 
 import { getUser } from '../data/UserData.js';
-import Copyright from './Copyright';
 import useAuth from '../hooks/useAuth.js';
 
 const defaultTheme = createTheme();
@@ -71,7 +70,7 @@ export default function Login() {
               label="Email Address"
               name="username"
               autoComplete="email"
-              // autoFocus
+            // autoFocus
             />
             <TextField
               margin="normal"
@@ -108,7 +107,7 @@ export default function Login() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+
       </Container>
     </ThemeProvider>
   );

@@ -1,7 +1,7 @@
 import axios from '../api/axios'
 
 const registerUrl = '/register'
-const checkUrl = '/check'
+const checkUrl = '/verification'
 const loginUrl = '/login'
 const authenticateUrl = '/authenticate'
 
